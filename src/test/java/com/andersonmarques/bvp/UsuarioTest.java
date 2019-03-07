@@ -7,18 +7,22 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.andersonmarques.bvp.model.Contato;
 import com.andersonmarques.bvp.model.Usuario;
 import com.andersonmarques.bvp.model.enums.Tipo;
+import com.andersonmarques.bvp.service.UsuarioService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UsuarioTest {
 	
 	private Usuario user;
+	@Autowired
+	private UsuarioService usuarioService;
 	
 	@Before
 	public void instanciarObjetos() {
@@ -95,6 +99,19 @@ public class UsuarioTest {
 		user.adicionarContato(contato2);
 		Contato contato2Recuperado = user.getContatoPorTipo(Tipo.FACEBOOK);
 		assertEquals("contato@facebook.com", contato2Recuperado.getEndereco());
+	}
+	
+	@Test
+	public void gravaRecuperaUsuarioNoBanco() {
+		usuarioService.adicionar(user);
+		Usuario recuperado = usuarioService.buscarUsuarioPorEmail(user.getEmail());
+		assertEquals("Anderson", recuperado.getNome());
+		assertEquals("email@contato.com", recuperado.getEmail());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void lancaExcecaoAoBuscarUsuarioComEmailErrado() {
+		usuarioService.buscarUsuarioPorEmail("email@inexistente.com");
 	}
 }
 
