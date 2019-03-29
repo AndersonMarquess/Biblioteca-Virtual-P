@@ -17,10 +17,10 @@ public class LivroService {
 	}
 
 	public Livro buscarPorTitulo(String titulo) {
-		return livroRepository.findFirstLivroByTituloLike(titulo);
+		return livroRepository.findFirstLivroByTituloContainsIgnoreCase(titulo);
 	}
 
-	public void removerPorId(Integer id) {
+	public void removerPorId(String id) {
 		livroRepository.deleteById(id);
 	}
 }

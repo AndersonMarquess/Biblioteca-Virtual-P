@@ -88,12 +88,12 @@ public class LivroTest {
 	public void persistirRecuperarERemoverUmLivroComCategoria() {
 		livro.adicionarCategoria(new Categoria("Categoria 1"));
 		livroService.adicionar(livro);
-		Livro livroRecuperado = livroService.buscarPorTitulo("livro 1");
+		Livro livroRecuperado = livroService.buscarPorTitulo("Livro padrão 1");
 
-		assertEquals("Livro sobre assuntos diversificados", livroRecuperado.getDescricao());
-		assertEquals("1234-5698-4512-4521", livroRecuperado.getIsbn());
+		assertEquals("Descrição do livro padrão 1", livroRecuperado.getDescricao());
+		assertEquals("123-478-5555", livroRecuperado.getIsbn());
 		assertEquals(1, livroRecuperado.getCategorias().size());
-		assertTrue(livroRecuperado.getCategorias().stream().anyMatch(p -> p.getNome().equals("Categoria 1")));
+		assertTrue(livroRecuperado.getCategorias().stream().anyMatch(p -> p.getNome().equals("Programação")));
 
 		livroService.removerPorId(livroRecuperado.getId());
 	}
