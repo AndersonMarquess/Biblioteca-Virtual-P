@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,47 +22,35 @@ public class Livro {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
 	private String isbn;
-	private String nome;
+	private String titulo;
 	private String descricao;
 	private String urlCapa;
-	@ManyToMany(cascade = { CascadeType.ALL })
+	@ManyToMany(cascade = { CascadeType.ALL },fetch=FetchType.EAGER)
 	@JoinTable(
-			joinColumns=@JoinColumn(name="FK_livro"),
-			inverseJoinColumns=@JoinColumn(name="FK_categoria")
+        joinColumns=@JoinColumn(name="FK_livro"),
+        inverseJoinColumns=@JoinColumn(name="FK_categoria")
 	)
 	private List<Categoria> categorias = new ArrayList<>();
-
-	public Livro() {}
 	
-	public Livro(String isbn, String nome, String descricao, String urlCapa) {
+	public Livro() {}
+
+	public Livro(String isbn, String titulo, String descricao, String urlCapa) {
 		this.isbn = isbn;
-		this.nome = nome;
+		this.titulo = titulo;
 		this.descricao = descricao;
 		this.urlCapa = urlCapa;
 	}
 
-	public void setIsbn(String isbn) {
-		this.isbn = isbn;
+	public Integer getId() {
+		return id;
 	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	public void setUrlCapa(String urlCapa) {
-		this.urlCapa = urlCapa;
-	}
-
+	
 	public String getIsbn() {
 		return isbn;
 	}
 
-	public String getNome() {
-		return nome;
+	public String getTitulo() {
+		return titulo;
 	}
 
 	public String getDescricao() {
@@ -70,6 +59,22 @@ public class Livro {
 
 	public String getUrlCapa() {
 		return urlCapa;
+	}
+
+	public void setIsbn(String isbn) {
+		this.isbn = isbn;
+	}
+
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public void setUrlCapa(String urlCapa) {
+		this.urlCapa = urlCapa;
 	}
 
 	public void adicionarCategoria(Categoria... categoria) {

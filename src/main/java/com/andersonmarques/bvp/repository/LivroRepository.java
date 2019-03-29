@@ -8,4 +8,6 @@ import com.andersonmarques.bvp.model.Livro;
 @Repository
 public interface LivroRepository extends JpaRepository<Livro, Integer> {
 
+	Livro findFirstLivroByTituloLike(String titulo);
+
 }
