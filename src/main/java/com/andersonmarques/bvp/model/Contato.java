@@ -1,24 +1,24 @@
 package com.andersonmarques.bvp.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.UUID;
 
 import com.andersonmarques.bvp.model.enums.Tipo;
 
-@Entity
+@Document
 public class Contato {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+	private String id;
 	private Tipo tipoContato;
 	private String endereco;
 
 	public Contato() {}
 	
 	public Contato(String endereco, Tipo tipoContato) {
+        id = UUID.randomUUID().toString();
 		this.endereco = endereco;
 		this.tipoContato = tipoContato;
 	}

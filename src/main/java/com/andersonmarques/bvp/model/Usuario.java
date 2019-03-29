@@ -3,24 +3,21 @@ package com.andersonmarques.bvp.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.andersonmarques.bvp.model.enums.Tipo;
 
-@Entity
+@Document
 public class Usuario {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+	private String id;
 	private String nome;
 	private String senha;
-	private String email;
-	@OneToMany
+    private String email;
+    @DBRef(lazy=false)
 	private List<Contato> contatos = new ArrayList<>();
 
 	public Usuario() {}

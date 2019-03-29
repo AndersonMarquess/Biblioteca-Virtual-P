@@ -1,27 +1,21 @@
 package com.andersonmarques.bvp.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document
 public class Categoria {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer id;
+	private String id;
 	private String nome;
-	@ManyToMany(mappedBy="categorias")
-	private List<Livro> livros = new ArrayList<>();
 	
 	public Categoria() {}
 	
 	public Categoria(String nome) {
+		id = UUID.randomUUID().toString();
 		this.nome = nome;
 	}
 

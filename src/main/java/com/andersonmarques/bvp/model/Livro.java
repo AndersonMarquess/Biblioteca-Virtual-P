@@ -3,33 +3,22 @@ package com.andersonmarques.bvp.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.andersonmarques.bvp.exception.CategoriaDuplicadaException;
 
-@Entity
+@Document
 public class Livro {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer id;
+	private String id;
 	private String isbn;
 	private String titulo;
 	private String descricao;
 	private String urlCapa;
-	@ManyToMany(cascade = { CascadeType.ALL },fetch=FetchType.EAGER)
-	@JoinTable(
-        joinColumns=@JoinColumn(name="FK_livro"),
-        inverseJoinColumns=@JoinColumn(name="FK_categoria")
-	)
+	@DBRef(lazy=false)
 	private List<Categoria> categorias = new ArrayList<>();
 	
 	public Livro() {}
@@ -41,7 +30,7 @@ public class Livro {
 		this.urlCapa = urlCapa;
 	}
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 	
