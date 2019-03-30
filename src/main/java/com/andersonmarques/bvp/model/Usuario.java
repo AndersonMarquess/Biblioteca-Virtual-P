@@ -27,6 +27,10 @@ public class Usuario {
 		this.senha = senha;
 		this.email = email;
 	}
+	
+	public String getId() {
+		return id;
+	}
 
 	public void setNome(String nome) {
 		this.nome = nome;
