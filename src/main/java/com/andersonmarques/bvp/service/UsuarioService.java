@@ -14,6 +14,8 @@ public class UsuarioService {
 	private UsuarioRepository usuarioRepository;
 	@Autowired
 	private ContatoService contatoService;
+	@Autowired
+	private PermissaoService permissaoService;
 
 	public void adicionar(Usuario usuario) {
 		usuarioRepository.save(usuario);
@@ -21,6 +23,8 @@ public class UsuarioService {
 		for (Contato c : usuario.getContatos()) {
 			contatoService.adicionar(c);
 		}
+		
+		permissaoService.adicionarTodas(usuario.getPermissoes());
 	}
 
 	public Usuario buscarUsuarioPorId(String id) {

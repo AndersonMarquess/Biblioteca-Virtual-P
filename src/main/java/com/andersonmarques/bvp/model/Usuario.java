@@ -1,7 +1,10 @@
 package com.andersonmarques.bvp.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -19,6 +22,8 @@ public class Usuario {
     private String email;
     @DBRef(lazy=false)
 	private List<Contato> contatos = new ArrayList<>();
+    @DBRef(lazy=false)
+	private Set<Permissao> permissoes = new HashSet<>();
 
 	public Usuario() {}
 	
@@ -66,5 +71,13 @@ public class Usuario {
 
 	public Contato getContatoPorTipo(Tipo tipo) {
 		return contatos.stream().filter(c -> c.getTipo() == tipo).findFirst().get();
+	}
+
+	public void adicionarPermissao(Permissao... permissao) {
+		permissoes.addAll(Arrays.asList(permissao));
+	}
+
+	public Set<Permissao> getPermissoes() {
+		return permissoes;
 	}
 }

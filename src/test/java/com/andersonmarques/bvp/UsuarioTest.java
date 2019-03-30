@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.andersonmarques.bvp.model.Contato;
+import com.andersonmarques.bvp.model.Permissao;
 import com.andersonmarques.bvp.model.Usuario;
 import com.andersonmarques.bvp.model.enums.Tipo;
 import com.andersonmarques.bvp.service.UsuarioService;
@@ -127,5 +128,23 @@ public class UsuarioTest {
 		assertEquals("email@facebook.com", usuarioRecuperado.getContatoPorTipo(Tipo.FACEBOOK).getEndereco());
 		assertEquals("email@twitter.com", usuarioRecuperado.getContatoPorTipo(Tipo.TWITTER).getEndereco());
 		usuarioService.removerPorId(usuarioRecuperado.getId());
+	}
+
+	@Test
+	public void gravarERecuperarPermissaoDoUsuarioNoBanco() {
+		Usuario user = new Usuario("Pedro", "321", "pedro@contato.com");
+		user.adicionarPermissao(new Permissao("ADMIN"), new Permissao("ROLE_USER"));
+
+		usuarioService.adicionar(user);
+		Usuario userRecuperado = usuarioService.buscarUsuarioPorEmail("pedro@contato.com");
+
+		assertEquals("ROLE_USER", userRecuperado.getPermissoes().stream()
+				.filter(p -> p.getNomePermissao().equals("ROLE_USER")).findAny().get().getNomePermissao());
+		assertEquals("ROLE_ADMIN", userRecuperado.getPermissoes().stream()
+				.filter(p -> p.getNomePermissao().equals("ROLE_ADMIN")).findAny().get().getNomePermissao());
+		assertTrue(userRecuperado.getPermissoes().stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
+		assertTrue(userRecuperado.getPermissoes().stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_ADMIN")));
+
+		usuarioService.removerPorId(userRecuperado.getId());
 	}
 }
