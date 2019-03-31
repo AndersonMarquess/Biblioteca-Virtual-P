@@ -1,5 +1,7 @@
 package com.andersonmarques.bvp.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +19,15 @@ public class UsuarioService {
 	@Autowired
 	private PermissaoService permissaoService;
 
-	public void adicionar(Usuario usuario) {
-		usuarioRepository.save(usuario);
+	public Usuario adicionar(Usuario usuario) {
+		Usuario userRecuperado = usuarioRepository.save(usuario);;
 	
 		for (Contato c : usuario.getContatos()) {
 			contatoService.adicionar(c);
 		}
-		
 		permissaoService.adicionarTodas(usuario.getPermissoes());
+
+		return userRecuperado;
 	}
 
 	public Usuario buscarUsuarioPorId(String id) {
@@ -44,5 +47,9 @@ public class UsuarioService {
 		for (Contato c : usuario.getContatos()) {
 			contatoService.removerPorId(c.getId());
 		}
+	}
+
+	public List<Usuario> buscarTodos() {
+		return usuarioRepository.findAll();
 	}
 }
