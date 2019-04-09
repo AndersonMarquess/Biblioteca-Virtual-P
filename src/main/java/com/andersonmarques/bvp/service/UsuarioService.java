@@ -20,12 +20,13 @@ public class UsuarioService {
 	private PermissaoService permissaoService;
 
 	public Usuario adicionar(Usuario usuario) {
-		Usuario userRecuperado = usuarioRepository.save(usuario);;
+		Usuario userRecuperado = usuarioRepository.save(usuario);
 	
 		for (Contato c : usuario.getContatos()) {
 			contatoService.adicionar(c);
 		}
-		permissaoService.adicionarTodas(usuario.getPermissoes());
+		
+		permissaoService.adicionarTodasAsPermissoesNoUsuario(usuario, usuario.getPermissoes());
 
 		return userRecuperado;
 	}
