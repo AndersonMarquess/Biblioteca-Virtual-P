@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +17,7 @@ import com.andersonmarques.bvp.model.Contato;
 import com.andersonmarques.bvp.model.Permissao;
 import com.andersonmarques.bvp.model.Usuario;
 import com.andersonmarques.bvp.model.enums.Tipo;
+import com.andersonmarques.bvp.service.PermissaoService;
 import com.andersonmarques.bvp.service.UsuarioService;
 
 @RunWith(SpringRunner.class)
@@ -24,6 +27,8 @@ public class UsuarioTest {
 	private Usuario user;
 	@Autowired
 	private UsuarioService usuarioService;
+	@Autowired
+	private PermissaoService permissaoService;
 
 	@Before
 	public void instanciarObjetos() {
@@ -131,19 +136,35 @@ public class UsuarioTest {
 	}
 
 	@Test
-	public void gravarERecuperarPermissaoDoUsuarioNoBanco() {
+	public void gravarERecuperarPermissoesDosUsuariosNoBanco() {
 		Usuario user = new Usuario("Pedro", "321", "pedro@contato.com");
-		user.adicionarPermissao(new Permissao("ADMIN"), new Permissao("ROLE_USER"));
+		Usuario admin = new Usuario("Gabriel", "231", "gabriel@contato.com");
+		Usuario adminMaster = new Usuario("Vanessa", "333", "vanessa@contato.com");
+		user.adicionarPermissao(new Permissao("ROLE_USER"));
+		admin.adicionarPermissao(new Permissao("ADMIN"), new Permissao("ROLE_USER"));
+		adminMaster.adicionarPermissao(new Permissao("ADMIN"), new Permissao("ROLE_USER"), new Permissao("MASTER"));
 
 		usuarioService.adicionar(user);
+		usuarioService.adicionar(admin);
+		usuarioService.adicionar(adminMaster);
 		Usuario userRecuperado = usuarioService.buscarUsuarioPorEmail("pedro@contato.com");
+		Usuario adminRecuperado = usuarioService.buscarUsuarioPorEmail("gabriel@contato.com");
+		Usuario adminMasterRecuperado = usuarioService.buscarUsuarioPorEmail("vanessa@contato.com");
 
-		assertEquals("ROLE_USER", userRecuperado.getPermissoes().stream()
-				.filter(p -> p.getNomePermissao().equals("ROLE_USER")).findAny().get().getNomePermissao());
-		assertEquals("ROLE_ADMIN", userRecuperado.getPermissoes().stream()
-				.filter(p -> p.getNomePermissao().equals("ROLE_ADMIN")).findAny().get().getNomePermissao());
-		assertTrue(userRecuperado.getPermissoes().stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
-		assertTrue(userRecuperado.getPermissoes().stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_ADMIN")));
+		List<Permissao> userPermissoesRecuperada = permissaoService
+				.buscarPermissoesPorIdUsuario(userRecuperado.getId());
+		assertTrue(userPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
+
+		List<Permissao> adminPermissoesRecuperada = permissaoService
+				.buscarPermissoesPorIdUsuario(adminRecuperado.getId());
+		assertTrue(adminPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
+		assertTrue(adminPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_ADMIN")));
+
+		List<Permissao> adminMasterPermissoesRecuperada = permissaoService
+				.buscarPermissoesPorIdUsuario(adminMasterRecuperado.getId());
+		assertTrue(adminMasterPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
+		assertTrue(adminMasterPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_ADMIN")));
+		assertTrue(adminMasterPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_MASTER")));
 
 		usuarioService.removerPorId(userRecuperado.getId());
 	}

@@ -9,51 +9,74 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.andersonmarques.bvp.model.Categoria;
+import com.andersonmarques.bvp.model.Contato;
 import com.andersonmarques.bvp.model.Livro;
+import com.andersonmarques.bvp.model.Permissao;
 import com.andersonmarques.bvp.model.Usuario;
+import com.andersonmarques.bvp.model.enums.Tipo;
 import com.andersonmarques.bvp.repository.CategoriaRepository;
-import com.andersonmarques.bvp.repository.LivroRepository;
-import com.andersonmarques.bvp.repository.UsuarioRepository;
 
 @Component
 public class DBService implements CommandLineRunner {
 
 	@Autowired
-	private UsuarioRepository usuarioRepository;
-	@Autowired
 	private CategoriaRepository categoriaRepository;
 	@Autowired
-	private LivroRepository livroRepository;
-	@Autowired
 	private MongoTemplate mongoTemplate;
+	@Autowired
+	private LivroService livroService;
+	@Autowired
+	private UsuarioService usuarioService;
 
 	@Override
 	public void run(String... args) throws Exception {
 		mongoTemplate.getDb().drop();
 		System.out.println(
-				"Drop banco [ " + DBService.class.getSimpleName() + " ] Tentando persistir informações no banco");
-		String senha = new BCryptPasswordEncoder().encode("123");
-		usuarioRepository.save(new Usuario("anderson", senha, "email@email"));
-		livro_categoria();
+				String.format("Drop Banco [ %s ] tentando persistir informações", DBService.class.getSimpleName()));
+		popularBanco();
 	}
 
-	private void livro_categoria() {
+	private void popularBanco() {
+		criarUsuarios();
+		criarLivros();
+	}
 
-		Livro l1 = new Livro("123-478-5555", "Livro Padrão 1", "Descrição do livro padrão 1", "urlCapaDoLivro");
-		Livro l2 = new Livro("321-478-6666", "Livro Padrão 2", "Descrição do livro padrão 2", "urlCapaDoLivro");
-		Livro l3 = new Livro("478-312-7777", "Livro Padrão 3 - Pro e UML", "Descrição sobre programção e uml",
-				"urlCapaDoLivro");
-		livroRepository.saveAll(Arrays.asList(l1, l2, l3));
+	private void criarLivros() {
+		Livro livro1 = new Livro("351-456-4571", "Dinastia M", "Descrição do livro", "urlCapaDoLivro");
+		Livro livro2 = new Livro("421-351-571", "Y o último homem", "Descrição do livro", "urlCapaDoLivro");
+		Livro livro3 = new Livro("51-456-4571", "Demolidor", "Descrição do livro", "urlCapaDoLivro");
 
-		Categoria c1 = new Categoria("Programação");
-		Categoria c2 = new Categoria("UML");
-		categoriaRepository.saveAll(Arrays.asList(c1, c2));
+		Categoria ficcao = new Categoria("Ficção científica");
+		Categoria aventura = new Categoria("Aventura");
+		Categoria superHeroi = new Categoria("Super-herói");
 
-		l1.adicionarCategoria(c1);
-		l2.adicionarCategoria(c2);
-		l3.adicionarCategoria(c1, c2);
+		livro1.adicionarCategoria(superHeroi);
+		livro2.adicionarCategoria(ficcao, aventura);
+		livro3.adicionarCategoria(superHeroi);
 
-		categoriaRepository.saveAll(Arrays.asList(c1, c2));
-		livroRepository.saveAll(Arrays.asList(l1, l2, l3));
+		livroService.adicionar(livro1);
+		livroService.adicionar(livro2);
+		livroService.adicionar(livro3);
+		categoriaRepository.saveAll(Arrays.asList(ficcao, aventura, superHeroi));
+	}
+
+	private void criarUsuarios() {
+		BCryptPasswordEncoder enconder = new BCryptPasswordEncoder();
+
+		Usuario pessoa1 = new Usuario("admin", enconder.encode("password"), "admin@email.com");
+		pessoa1.adicionarContato(new Contato("admin_social@rede.com", Tipo.TWITTER));
+		pessoa1.adicionarPermissao(new Permissao("USER"), new Permissao("ADMIN"));
+		
+		Usuario pessoa2 = new Usuario("necronomicon", enconder.encode("password"), "necronomicon@email.com");
+		pessoa2.adicionarContato(new Contato("necrono@micon.com", Tipo.TWITTER));
+		pessoa2.adicionarPermissao(new Permissao("USER"), new Permissao("MASTER"));
+
+		Usuario pessoa3 = new Usuario("faraday", enconder.encode("password"), "faraday@email.com");
+		pessoa3.adicionarContato(new Contato("faraday@twitter.com", Tipo.TWITTER));
+		pessoa3.adicionarPermissao(new Permissao("USER"), new Permissao("ADMIN"));
+
+		usuarioService.adicionar(pessoa1);
+		usuarioService.adicionar(pessoa2);
+		usuarioService.adicionar(pessoa3);
 	}
 }
