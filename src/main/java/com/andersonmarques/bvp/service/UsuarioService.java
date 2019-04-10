@@ -3,6 +3,7 @@ package com.andersonmarques.bvp.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.andersonmarques.bvp.model.Contato;
@@ -20,6 +21,7 @@ public class UsuarioService {
 	private PermissaoService permissaoService;
 
 	public Usuario adicionar(Usuario usuario) {
+		usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
 		Usuario userRecuperado = usuarioRepository.save(usuario);
 	
 		for (Contato c : usuario.getContatos()) {

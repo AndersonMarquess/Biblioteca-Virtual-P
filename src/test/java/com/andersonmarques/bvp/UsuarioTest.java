@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.andersonmarques.bvp.model.Contato;
@@ -128,7 +129,7 @@ public class UsuarioTest {
 		Usuario usuarioRecuperado = usuarioService.buscarUsuarioPorEmail("pedro@contato.com");
 
 		assertEquals("Pedro", usuarioRecuperado.getNome());
-		assertEquals("321", usuarioRecuperado.getSenha());
+		assertTrue(new BCryptPasswordEncoder().matches("321", usuarioRecuperado.getSenha()));
 
 		assertEquals("email@facebook.com", usuarioRecuperado.getContatoPorTipo(Tipo.FACEBOOK).getEndereco());
 		assertEquals("email@twitter.com", usuarioRecuperado.getContatoPorTipo(Tipo.TWITTER).getEndereco());
@@ -144,12 +145,9 @@ public class UsuarioTest {
 		admin.adicionarPermissao(new Permissao("ADMIN"), new Permissao("ROLE_USER"));
 		adminMaster.adicionarPermissao(new Permissao("ADMIN"), new Permissao("ROLE_USER"), new Permissao("MASTER"));
 
-		usuarioService.adicionar(user);
-		usuarioService.adicionar(admin);
-		usuarioService.adicionar(adminMaster);
-		Usuario userRecuperado = usuarioService.buscarUsuarioPorEmail("pedro@contato.com");
-		Usuario adminRecuperado = usuarioService.buscarUsuarioPorEmail("gabriel@contato.com");
-		Usuario adminMasterRecuperado = usuarioService.buscarUsuarioPorEmail("vanessa@contato.com");
+		Usuario userRecuperado = usuarioService.adicionar(user);
+		Usuario adminRecuperado = usuarioService.adicionar(admin);
+		Usuario adminMasterRecuperado = usuarioService.adicionar(adminMaster);
 
 		List<Permissao> userPermissoesRecuperada = permissaoService
 				.buscarPermissoesPorIdUsuario(userRecuperado.getId());
@@ -167,5 +165,12 @@ public class UsuarioTest {
 		assertTrue(adminMasterPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_MASTER")));
 
 		usuarioService.removerPorId(userRecuperado.getId());
+	}
+
+	@Test
+	public void gravarUsuarioComSenhaCriptografadaNoBanco() {
+		Usuario userRecuperado = usuarioService.adicionar(new Usuario("Zezinho", "123", "zezem@email.com"));
+
+		assertTrue(new BCryptPasswordEncoder().matches("123", userRecuperado.getSenha()));
 	}
 }
