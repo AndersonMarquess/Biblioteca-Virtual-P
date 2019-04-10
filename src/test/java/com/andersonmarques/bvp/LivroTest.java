@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.andersonmarques.bvp.exception.CategoriaDuplicadaException;
 import com.andersonmarques.bvp.model.Categoria;
 import com.andersonmarques.bvp.model.Livro;
+import com.andersonmarques.bvp.service.CategoriaService;
 import com.andersonmarques.bvp.service.LivroService;
 
 @RunWith(SpringRunner.class)
@@ -25,6 +26,8 @@ public class LivroTest {
 
 	@Autowired
 	private LivroService livroService;
+	@Autowired
+	private CategoriaService categoriaService;
 
 	@Before
 	public void prepararMocks() {
@@ -85,16 +88,32 @@ public class LivroTest {
 	}
 
 	@Test
-	public void persistirRecuperarERemoverUmLivroComCategoria() {
-		livro.adicionarCategoria(new Categoria("Categoria 1"));
+	public void persistirRecuperarERemoverUmLivroComCategoriaNoBanco() {
+		livro = new Livro("55-5554-1111", "Livro padrão 11", "Descrição do livro padrão 1", "");
+		livro.adicionarCategoria(new Categoria("Categoria 1"), new Categoria("Programação"));
 		livroService.adicionar(livro);
-		Livro livroRecuperado = livroService.buscarPorTitulo("Livro padrão 1");
+		Livro livroRecuperado = livroService.buscarPorTitulo("Livro padrão 11");
 
 		assertEquals("Descrição do livro padrão 1", livroRecuperado.getDescricao());
-		assertEquals("123-478-5555", livroRecuperado.getIsbn());
-		assertEquals(1, livroRecuperado.getCategorias().size());
-		assertTrue(livroRecuperado.getCategorias().stream().anyMatch(p -> p.getNome().equals("Programação")));
+		assertEquals("55-5554-1111", livroRecuperado.getIsbn());
+		
+		List<Categoria> categorias = categoriaService.buscarTodasCategoriasPorIdLivro(livroRecuperado.getId());
+		assertTrue(categorias.stream().anyMatch(p -> p.getNome().equals("Categoria 1")));
+		assertTrue(categorias.stream().anyMatch(p -> p.getNome().equals("Programação")));
 
+		livroService.removerPorId(livroRecuperado.getId());
+	}
+	
+	@Test
+	public void adicionarUmaCategoriaExistenteEmUmNovoLivro() {
+		livro = new Livro("551", "Livro mock", "adicionar categoria existente em livro", "");
+		livro.adicionarCategoria(new Categoria("Programação"));
+		Livro livroRecuperado = livroService.adicionar(livro);
+		List<Categoria> categorias = categoriaService.buscarTodasCategoriasPorIdLivro(livroRecuperado.getId());
+		
+		assertEquals(1, categorias.size());
+		assertTrue(categorias.stream().anyMatch(p -> p.getNome().equals("Programação")));
+		
 		livroService.removerPorId(livroRecuperado.getId());
 	}
 }

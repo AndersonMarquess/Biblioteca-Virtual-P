@@ -11,9 +11,13 @@ public class LivroService {
 	
 	@Autowired
 	private LivroRepository livroRepository;
+	@Autowired
+	private CategoriaService categoriaService;
 
-	public void adicionar(Livro livro) {
-		livroRepository.save(livro);
+	public Livro adicionar(Livro livro) {
+		Livro livroRecuperado = livroRepository.save(livro);
+		categoriaService.adicionarTodasAsCategoriaNoLivro(livro, livro.getCategorias());
+		return livroRecuperado;
 	}
 
 	public Livro buscarPorTitulo(String titulo) {
