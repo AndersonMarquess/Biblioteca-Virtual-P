@@ -13,16 +13,18 @@ public class Contato {
 	
 	@Id
 	private String id;
-	private Tipo tipoContato;
+	private Integer tipo;
 	@Indexed(unique=true)
 	private String endereco;
 
-	public Contato() {}
+	public Contato() {
+		id = UUID.randomUUID().toString();
+	}
 	
-	public Contato(String endereco, Tipo tipoContato) {
+	public Contato(String endereco, Tipo tipo) {
         id = UUID.randomUUID().toString();
 		this.endereco = endereco;
-		this.tipoContato = tipoContato;
+		this.tipo = tipo.getId();
 	}
 	
 	public String getId() {
@@ -38,6 +40,10 @@ public class Contato {
 	}
 
 	public Tipo getTipo() {
-		return tipoContato;
+		return Tipo.toEnum(tipo);
+	}
+	
+	public void setTipo(Integer tipo) {
+		this.tipo = Tipo.toEnum(tipo).getId();
 	}
 }
