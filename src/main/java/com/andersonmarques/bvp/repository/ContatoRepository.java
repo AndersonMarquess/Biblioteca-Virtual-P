@@ -8,4 +8,6 @@ import com.andersonmarques.bvp.model.Contato;
 @Repository
 public interface ContatoRepository extends MongoRepository<Contato, String> {
 
+	Contato findByEndereco(String email);
+
 }
