@@ -1,7 +1,6 @@
 package com.andersonmarques.bvp.model;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,16 +22,13 @@ public class Permissao {
 	private Set<Usuario> usuarios = new HashSet<>();
 
 	public Permissao() {
+		id = UUID.randomUUID().toString();
 	}
 
 	public Permissao(String nomePermissao) {
 		id = UUID.randomUUID().toString();
 		
-		if (nomePermissao.toUpperCase().startsWith("ROLE_")) {
-			this.nomePermissao = nomePermissao.toUpperCase();
-		} else {
-			this.nomePermissao = "ROLE_" + nomePermissao.toUpperCase();
-		}
+		padronizarNomePermissao(nomePermissao);
 	}
 
 	public String getId() {
@@ -44,7 +40,7 @@ public class Permissao {
 	}
 
 	public void setNomePermissao(String nomePermissao) {
-		this.nomePermissao = nomePermissao;
+		padronizarNomePermissao(nomePermissao);
 	}
 	
 	public void adicionarUsuario(Usuario usuario) {
@@ -56,20 +52,11 @@ public class Permissao {
 		return usuarios;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, nomePermissao);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Permissao other = (Permissao) obj;
-		return Objects.equals(id, other.id) && Objects.equals(nomePermissao, other.nomePermissao);
+	private void padronizarNomePermissao(String nomePermissao) {
+		if (nomePermissao.toUpperCase().startsWith("ROLE_")) {
+			this.nomePermissao = nomePermissao.toUpperCase();
+		} else {
+			this.nomePermissao = "ROLE_" + nomePermissao.toUpperCase();
+		}
 	}
 }
