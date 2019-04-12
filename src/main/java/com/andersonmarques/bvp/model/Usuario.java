@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
@@ -12,7 +11,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.andersonmarques.bvp.model.enums.Tipo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Document
 public class Usuario {
@@ -24,7 +22,6 @@ public class Usuario {
 	private String email;
 	@DBRef(lazy = false)
 	private List<Contato> contatos = new ArrayList<>();
-	@JsonIgnore
 	@DBRef(lazy = true)
 	private Set<Permissao> permissoes = new HashSet<>();
 
@@ -80,25 +77,12 @@ public class Usuario {
 	public void adicionarPermissao(Permissao... permissao) {
 		permissoes.addAll(Arrays.asList(permissao));
 	}
-
+	
 	public Set<Permissao> getPermissoes() {
 		return permissoes;
 	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(email, id, nome);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Usuario other = (Usuario) obj;
-		return Objects.equals(email, other.email) && Objects.equals(id, other.id) && Objects.equals(nome, other.nome);
+	
+	public void setPermissoes(Set<Permissao> permissoes) {
+		this.permissoes = permissoes;
 	}
 }
