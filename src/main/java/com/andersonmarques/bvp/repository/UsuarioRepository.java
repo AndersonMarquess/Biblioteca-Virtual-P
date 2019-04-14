@@ -11,5 +11,7 @@ import com.andersonmarques.bvp.model.Usuario;
 public interface UsuarioRepository extends MongoRepository<Usuario, String> {
 
 	Optional<Usuario> findUsuarioByEmail(String email);
+
+	Optional<Usuario> findByNome(String nome);
 	
 }

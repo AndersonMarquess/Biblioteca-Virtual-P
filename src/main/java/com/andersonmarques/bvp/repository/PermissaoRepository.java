@@ -13,6 +13,6 @@ public interface PermissaoRepository extends MongoRepository<Permissao, String> 
 
 	Optional<Permissao> findByNomePermissao(String nomePermissao);
 
-	List<Permissao> findAllByUsuarios(String idUsuario);
+	List<Permissao> findAllByUsuariosId(String id);
 
 }
