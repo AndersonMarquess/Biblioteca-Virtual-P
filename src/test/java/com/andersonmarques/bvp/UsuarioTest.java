@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -177,13 +178,37 @@ public class UsuarioTest {
 
 		assertTrue(new BCryptPasswordEncoder().matches("123", userRecuperado.getSenha()));
 	}
-	
+
 	@Test
 	public void buscarUserDetailsPorNome() {
 		UserDetails userDetails = usuarioAutenticavelService.loadUserByUsername("necronomicon");
-		
+
 		assertTrue(new BCryptPasswordEncoder().matches("123", userDetails.getPassword()));
 		assertTrue(userDetails.getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_USER")));
 		assertTrue(userDetails.getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_MASTER")));
+	}
+
+	@Test
+	public void adicionarPermissaoPadraoDeUserEmNovosUsuarios() {
+		Usuario usuario = new Usuario("demolidor", "password", "demolidor@email.com");
+		usuario.adicionarContato(new Contato("demolidor@fb.com", Tipo.FACEBOOK));
+		usuario.adicionarPermissao(new Permissao("USER"));
+
+		Usuario usuarioRecuperado = usuarioService.adicionar(usuario);
+		assertTrue(usuarioRecuperado.getPermissoes().stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
+	}
+	
+	@Test
+	public void verificarSenhaDoUsuario() {
+		String criptografado = BCrypt.hashpw("123", BCrypt.gensalt(15));
+		String encodada = new BCryptPasswordEncoder().encode("123");
+		
+		System.out.println("Senha criptografada: "+criptografado);
+		System.out.println("Senha encodada: "+encodada);
+		
+		assertTrue(new BCryptPasswordEncoder().matches("123", criptografado));
+		assertTrue(new BCryptPasswordEncoder().matches("123", encodada));
+		assertTrue(BCrypt.checkpw("123", criptografado));
+		assertTrue(BCrypt.checkpw("123", encodada));
 	}
 }
