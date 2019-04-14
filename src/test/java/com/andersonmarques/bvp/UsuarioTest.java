@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -19,6 +20,7 @@ import com.andersonmarques.bvp.model.Permissao;
 import com.andersonmarques.bvp.model.Usuario;
 import com.andersonmarques.bvp.model.enums.Tipo;
 import com.andersonmarques.bvp.service.PermissaoService;
+import com.andersonmarques.bvp.service.UsuarioAutenticavelService;
 import com.andersonmarques.bvp.service.UsuarioService;
 
 @RunWith(SpringRunner.class)
@@ -30,6 +32,8 @@ public class UsuarioTest {
 	private UsuarioService usuarioService;
 	@Autowired
 	private PermissaoService permissaoService;
+	@Autowired
+	private UsuarioAutenticavelService usuarioAutenticavelService;
 
 	@Before
 	public void instanciarObjetos() {
@@ -172,5 +176,14 @@ public class UsuarioTest {
 		Usuario userRecuperado = usuarioService.adicionar(new Usuario("Zezinho", "123", "zezem@email.com"));
 
 		assertTrue(new BCryptPasswordEncoder().matches("123", userRecuperado.getSenha()));
+	}
+	
+	@Test
+	public void buscarUserDetailsPorNome() {
+		UserDetails userDetails = usuarioAutenticavelService.loadUserByUsername("necronomicon");
+		
+		assertTrue(new BCryptPasswordEncoder().matches("123", userDetails.getPassword()));
+		assertTrue(userDetails.getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_USER")));
+		assertTrue(userDetails.getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_MASTER")));
 	}
 }

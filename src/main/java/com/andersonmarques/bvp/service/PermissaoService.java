@@ -42,6 +42,6 @@ public class PermissaoService {
 	}
 	
 	public List<Permissao> buscarPermissoesPorIdUsuario(String idUsuario) {
-		return permissaoRepository.findAllByUsuarios(idUsuario);
+		return permissaoRepository.findAllByUsuariosId(idUsuario);
 	}
 }

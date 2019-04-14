@@ -5,7 +5,6 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.andersonmarques.bvp.model.Categoria;
@@ -61,17 +60,15 @@ public class DBService implements CommandLineRunner {
 	}
 
 	private void criarUsuarios() {
-		BCryptPasswordEncoder enconder = new BCryptPasswordEncoder();
-
-		Usuario pessoa1 = new Usuario("admin", enconder.encode("password"), "admin@email.com");
+		Usuario pessoa1 = new Usuario("admin", "password", "admin@email.com");
 		pessoa1.adicionarContato(new Contato("admin_social@rede.com", Tipo.TWITTER));
 		pessoa1.adicionarPermissao(new Permissao("USER"), new Permissao("ADMIN"));
 		
-		Usuario pessoa2 = new Usuario("necronomicon", enconder.encode("password"), "necronomicon@email.com");
+		Usuario pessoa2 = new Usuario("necronomicon", "123", "necronomicon@email.com");
 		pessoa2.adicionarContato(new Contato("necrono@micon.com", Tipo.TWITTER));
 		pessoa2.adicionarPermissao(new Permissao("USER"), new Permissao("MASTER"));
 
-		Usuario pessoa3 = new Usuario("faraday", enconder.encode("password"), "faraday@email.com");
+		Usuario pessoa3 = new Usuario("faraday", "password", "faraday@email.com");
 		pessoa3.adicionarContato(new Contato("faraday@twitter.com", Tipo.TWITTER));
 		pessoa3.adicionarPermissao(new Permissao("USER"), new Permissao("ADMIN"));
 
