@@ -39,8 +39,12 @@ public class Contato {
 		return endereco;
 	}
 
-	public Tipo getTipo() {
+	public Tipo getTipoLiteral() {
 		return Tipo.toEnum(tipo);
+	}
+	
+	public Integer getTipo() {
+		return tipo;
 	}
 	
 	public void setTipo(Integer tipo) {

@@ -71,7 +71,7 @@ public class Usuario {
 	}
 
 	public Contato getContatoPorTipo(Tipo tipo) {
-		return contatos.stream().filter(c -> c.getTipo() == tipo).findFirst().get();
+		return contatos.stream().filter(c -> c.getTipoLiteral() == tipo).findFirst().get();
 	}
 
 	public void adicionarPermissao(Permissao... permissao) {

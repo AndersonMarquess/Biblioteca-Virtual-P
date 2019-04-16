@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,12 @@ public class UsuarioController {
 	@PostMapping(path = V1_BASE_PATH)
 	public Mono<Usuario> adicionar(@RequestBody Usuario usuario) {
 		Usuario usuarioResposta = usuarioService.adicionar(usuario);
+		return Mono.just(usuarioResposta);
+	}
+
+	@GetMapping(path = V1_BASE_PATH + "/{id}", produces = { "application/json" })
+	public Mono<Usuario> buscarInfoPorId(@PathVariable("id") String id) {
+		Usuario usuarioResposta = usuarioService.buscarUsuarioPorId(id);
 		return Mono.just(usuarioResposta);
 	}
 }
