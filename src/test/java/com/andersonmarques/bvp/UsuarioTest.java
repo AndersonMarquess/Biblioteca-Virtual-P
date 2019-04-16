@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -154,16 +154,16 @@ public class UsuarioTest {
 		Usuario adminRecuperado = usuarioService.adicionar(admin);
 		Usuario adminMasterRecuperado = usuarioService.adicionar(adminMaster);
 
-		List<Permissao> userPermissoesRecuperada = permissaoService
+		Set<Permissao> userPermissoesRecuperada = permissaoService
 				.buscarPermissoesPorIdUsuario(userRecuperado.getId());
 		assertTrue(userPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
 
-		List<Permissao> adminPermissoesRecuperada = permissaoService
+		Set<Permissao> adminPermissoesRecuperada = permissaoService
 				.buscarPermissoesPorIdUsuario(adminRecuperado.getId());
 		assertTrue(adminPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
 		assertTrue(adminPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_ADMIN")));
 
-		List<Permissao> adminMasterPermissoesRecuperada = permissaoService
+		Set<Permissao> adminMasterPermissoesRecuperada = permissaoService
 				.buscarPermissoesPorIdUsuario(adminMasterRecuperado.getId());
 		assertTrue(adminMasterPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
 		assertTrue(adminMasterPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_ADMIN")));

@@ -1,6 +1,5 @@
 package com.andersonmarques.bvp.service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -41,7 +40,7 @@ public class PermissaoService {
 		permissaoRepository.save(permissao);
 	}
 	
-	public List<Permissao> buscarPermissoesPorIdUsuario(String idUsuario) {
+	public Set<Permissao> buscarPermissoesPorIdUsuario(String idUsuario) {
 		return permissaoRepository.findAllByUsuariosId(idUsuario);
 	}
 }

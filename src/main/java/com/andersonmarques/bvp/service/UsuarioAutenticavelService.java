@@ -2,8 +2,8 @@ package com.andersonmarques.bvp.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -67,7 +67,7 @@ public class UsuarioAutenticavelService implements UserDetailsService {
 	 * @return
 	 */
 	private Collection<GrantedAuthority> getPermissoesPorIdUsuario(String id) {
-		List<Permissao> permissoes = permissaoRepository.findAllByUsuariosId(id);
+		Set<Permissao> permissoes = permissaoRepository.findAllByUsuariosId(id);
 		Collection<GrantedAuthority> authorities = new ArrayList<>();
 		permissoes.forEach(
 			p -> authorities.add(

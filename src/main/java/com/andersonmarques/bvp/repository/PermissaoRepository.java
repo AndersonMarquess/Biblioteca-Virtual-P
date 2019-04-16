@@ -1,7 +1,7 @@
 package com.andersonmarques.bvp.repository;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -13,6 +13,6 @@ public interface PermissaoRepository extends MongoRepository<Permissao, String> 
 
 	Optional<Permissao> findByNomePermissao(String nomePermissao);
 
-	List<Permissao> findAllByUsuariosId(String id);
+	Set<Permissao> findAllByUsuariosId(String id);
 
 }
