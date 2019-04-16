@@ -1,7 +1,9 @@
 package com.andersonmarques.bvp;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -49,7 +51,7 @@ public class UsuarioControllerTest {
 	public void buscarDetalhesDoUsuarioPorIdComRoleAdminRecebe_StatusCode200() {
 		ResponseEntity<List<Usuario>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
 				.exchange("/v1/usuario/all", HttpMethod.GET, null, getTipoListaDeUsuario());
-		
+
 		Usuario usuario = usuarios.getBody().get(0);
 
 		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("admin", "password")
@@ -65,12 +67,23 @@ public class UsuarioControllerTest {
 	public void buscarDetalhesDoUsuarioPorIdComRoleUserRecebe_StatusCode403() {
 		ResponseEntity<List<Usuario>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
 				.exchange("/v1/usuario/all", HttpMethod.GET, null, getTipoListaDeUsuario());
-		
+
 		Usuario usuario = usuarios.getBody().get(0);
-		
+
 		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("necronomicon", "123")
 				.getForEntity("/v1/usuario/" + usuario.getId(), Usuario.class);
 
 		assertEquals(403, resposta.getStatusCodeValue());
+	}
+
+	@Test
+	public void verificarPermissoesDoUsuarioPorId() {
+		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("admin", "password")
+				.exchange("/v1/usuario/5cb618e769bd3d42f806a937", HttpMethod.GET, null, Usuario.class);
+
+		assertNotNull(resposta.getBody());
+		assertEquals(200, resposta.getStatusCodeValue());
+		assertFalse(resposta.getBody().getPermissoes().isEmpty());
+		assertTrue(resposta.getBody().getPermissoes().stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
 	}
 }

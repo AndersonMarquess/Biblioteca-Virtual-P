@@ -1,6 +1,7 @@
 package com.andersonmarques.bvp.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,7 +49,15 @@ public class UsuarioService {
 	}
 
 	public Usuario buscarUsuarioPorId(String id) {
-		return usuarioRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id inválido"));
+		Optional<Usuario> usuario = usuarioRepository.findById(id);
+		
+		if(!usuario.isPresent()) {
+			throw new IllegalArgumentException("Id inválido");
+		}
+		
+		usuario.get().setPermissoes(permissaoService.buscarPermissoesPorIdUsuario(id));
+		
+		return usuario.get();
 	}
 
 	public Usuario buscarUsuarioPorEmail(String email) {
