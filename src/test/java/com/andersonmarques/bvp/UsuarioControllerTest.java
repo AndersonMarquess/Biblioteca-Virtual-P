@@ -16,10 +16,12 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.andersonmarques.bvp.model.Usuario;
 
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class UsuarioControllerTest {
@@ -78,8 +80,12 @@ public class UsuarioControllerTest {
 
 	@Test
 	public void verificarPermissoesDoUsuarioPorId() {
+		ResponseEntity<List<Usuario>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
+				.exchange("/v1/usuario/all", HttpMethod.GET, null, getTipoListaDeUsuario());
+		String idUsuario = usuarios.getBody().get(0).getId();
+		
 		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("admin", "password")
-				.exchange("/v1/usuario/5cb618e769bd3d42f806a937", HttpMethod.GET, null, Usuario.class);
+				.exchange("/v1/usuario/"+idUsuario, HttpMethod.GET, null, Usuario.class);
 
 		assertNotNull(resposta.getBody());
 		assertEquals(200, resposta.getStatusCodeValue());
