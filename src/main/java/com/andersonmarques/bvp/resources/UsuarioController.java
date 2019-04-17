@@ -1,6 +1,7 @@
 package com.andersonmarques.bvp.resources;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.andersonmarques.bvp.dto.UsuarioDTO;
 import com.andersonmarques.bvp.model.Usuario;
 import com.andersonmarques.bvp.service.UsuarioService;
 
@@ -27,9 +29,10 @@ public class UsuarioController {
 	private UsuarioService usuarioService;
 
 	@GetMapping(path = V1_BASE_PATH + "/all", produces = { "application/json" })
-	public Flux<Usuario> listarTodos() {
-		List<Usuario> usuarios = usuarioService.buscarTodos();
-		return Flux.fromIterable(usuarios);
+	public Flux<UsuarioDTO> listarTodos() {
+		List<UsuarioDTO> usuariosDTO = usuarioService.buscarTodos().stream().map(UsuarioDTO::new)
+				.collect(Collectors.toList());
+		return Flux.fromIterable(usuariosDTO);
 	}
 
 	@PostMapping(path = V1_BASE_PATH)

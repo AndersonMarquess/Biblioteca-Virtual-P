@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.andersonmarques.bvp.dto.UsuarioDTO;
 import com.andersonmarques.bvp.model.Contato;
 import com.andersonmarques.bvp.model.Usuario;
 import com.andersonmarques.bvp.model.enums.Tipo;
@@ -44,37 +45,37 @@ public class UsuarioControllerTest {
 	}
 
 	/**
-	 * Retorna o tipo List<Usuario>.
+	 * Retorna o tipo List<UsuarioDTO>.
 	 * 
-	 * @return List<Usuario>
+	 * @return List<UsuarioDTO>
 	 */
-	private ParameterizedTypeReference<List<Usuario>> getTipoListaDeUsuario() {
-		return new ParameterizedTypeReference<List<Usuario>>() {
+	private ParameterizedTypeReference<List<UsuarioDTO>> getTipoListaDeUsuario() {
+		return new ParameterizedTypeReference<List<UsuarioDTO>>() {
 		};
 	}
 
 	@Test
 	public void buscarDetalhesDoUsuarioPorIdComRoleAdminRecebe_StatusCode200() {
-		ResponseEntity<List<Usuario>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
+		ResponseEntity<List<UsuarioDTO>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
 				.exchange("/v1/usuario/all", HttpMethod.GET, null, getTipoListaDeUsuario());
 
-		Usuario usuario = usuarios.getBody().get(0);
+		UsuarioDTO usuario = usuarios.getBody().get(0);
 
 		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("admin", "password")
 				.getForEntity("/v1/usuario/" + usuario.getId(), Usuario.class);
 
 		assertNotNull(resposta.getBody());
 		assertEquals(usuario.getNome(), resposta.getBody().getNome());
-		assertEquals(usuario.getEmail(), resposta.getBody().getEmail());
+		assertTrue(usuario.getContatos().containsAll(resposta.getBody().getContatos()));
 		assertEquals(200, resposta.getStatusCodeValue());
 	}
 
 	@Test
 	public void buscarDetalhesDoUsuarioPorIdComRoleUserRecebe_StatusCode403() {
-		ResponseEntity<List<Usuario>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
+		ResponseEntity<List<UsuarioDTO>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
 				.exchange("/v1/usuario/all", HttpMethod.GET, null, getTipoListaDeUsuario());
 
-		Usuario usuario = usuarios.getBody().get(0);
+		UsuarioDTO usuario = usuarios.getBody().get(0);
 
 		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("necronomicon", "123")
 				.getForEntity("/v1/usuario/" + usuario.getId(), Usuario.class);
@@ -84,7 +85,7 @@ public class UsuarioControllerTest {
 
 	@Test
 	public void verificarPermissoesDoUsuarioPorId() {
-		ResponseEntity<List<Usuario>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
+		ResponseEntity<List<UsuarioDTO>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
 				.exchange("/v1/usuario/all", HttpMethod.GET, null, getTipoListaDeUsuario());
 		String idUsuario = usuarios.getBody().get(0).getId();
 
