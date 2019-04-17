@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -83,13 +85,30 @@ public class UsuarioControllerTest {
 		ResponseEntity<List<Usuario>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
 				.exchange("/v1/usuario/all", HttpMethod.GET, null, getTipoListaDeUsuario());
 		String idUsuario = usuarios.getBody().get(0).getId();
-		
+
 		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("admin", "password")
-				.exchange("/v1/usuario/"+idUsuario, HttpMethod.GET, null, Usuario.class);
+				.exchange("/v1/usuario/" + idUsuario, HttpMethod.GET, null, Usuario.class);
 
 		assertNotNull(resposta.getBody());
 		assertEquals(200, resposta.getStatusCodeValue());
 		assertFalse(resposta.getBody().getPermissoes().isEmpty());
 		assertTrue(resposta.getBody().getPermissoes().stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
+	}
+
+	@Test
+	public void removerUsuarioPorIdAutenticadoComRoleAdminRecebe_StatusCode200() {
+		Usuario usuario = new Usuario("mock", "senha", "email@mock.com");
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("content-type", "application/json");
+		HttpEntity<Usuario> usuarioEntity = new HttpEntity<>(usuario, headers);
+
+		ResponseEntity<Usuario> respostaPOST = clienteTeste.withBasicAuth("admin", "password").exchange("/v1/usuario",
+				HttpMethod.POST, usuarioEntity, Usuario.class);
+
+		ResponseEntity<String> respostaDELETE = clienteTeste.withBasicAuth("admin", "password")
+				.exchange("/v1/usuario/" + respostaPOST.getBody().getId(), HttpMethod.DELETE, null, String.class);
+
+		System.out.println(respostaDELETE.getBody());
+		assertEquals(200, respostaDELETE.getStatusCodeValue());
 	}
 }

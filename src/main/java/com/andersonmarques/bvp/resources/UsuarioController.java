@@ -3,6 +3,8 @@ package com.andersonmarques.bvp.resources;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,5 +41,11 @@ public class UsuarioController {
 	public Mono<Usuario> buscarInfoPorId(@PathVariable("id") String id) {
 		Usuario usuarioResposta = usuarioService.buscarUsuarioPorId(id);
 		return Mono.just(usuarioResposta);
+	}
+	
+	@DeleteMapping(path = V1_BASE_PATH + "/{id}", produces = { "application/json" })
+	public Mono<ResponseEntity<Void>> removerPorId(@PathVariable("id") String id) {
+		usuarioService.removerPorId(id);
+		return Mono.just(ResponseEntity.ok().build());
 	}
 }
