@@ -21,7 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.andersonmarques.bvp.model.Contato;
 import com.andersonmarques.bvp.model.Usuario;
+import com.andersonmarques.bvp.model.enums.Tipo;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -109,6 +111,41 @@ public class UsuarioControllerTest {
 				.exchange("/v1/usuario/" + respostaPOST.getBody().getId(), HttpMethod.DELETE, null, String.class);
 
 		System.out.println(respostaDELETE.getBody());
+		assertEquals(200, respostaDELETE.getStatusCodeValue());
+	}
+
+	@Test
+	public void atualizarUsuarioAutenticadoComRoleAdminRecebe_StatusCode200() {
+		Usuario usuario = new Usuario("mock", "senha", "email@mock.com");
+		HttpHeaders headers = new HttpHeaders();
+		HttpEntity<Usuario> usuarioEntity_POST = new HttpEntity<>(usuario, headers);
+
+		headers.add("content-type", "application/json");
+		usuario.adicionarContato(new Contato("@mock_junit", Tipo.TWITTER));
+		usuario.adicionarContato(new Contato("mock_junit@fb.com", Tipo.FACEBOOK));
+
+		ResponseEntity<Usuario> respostaPOST = clienteTeste.withBasicAuth("admin", "password").exchange("/v1/usuario",
+				HttpMethod.POST, usuarioEntity_POST, Usuario.class);
+
+		assertEquals(200, respostaPOST.getStatusCodeValue());
+
+		Usuario usuarioPOST = respostaPOST.getBody();
+		usuarioPOST.setEmail("mock_email_junit@email.com");
+		usuarioPOST.getContatoPorTipo(Tipo.FACEBOOK).setEndereco("mock_junit@facebook.com");
+
+		HttpEntity<Usuario> usuarioEntity_PUT = new HttpEntity<>(usuarioPOST, headers);
+
+		ResponseEntity<Usuario> respostaPUT = clienteTeste.withBasicAuth("admin", "password").exchange("/v1/usuario",
+				HttpMethod.PUT, usuarioEntity_PUT, Usuario.class);
+
+		assertNotNull(respostaPUT.getBody());
+		assertEquals(200, respostaPUT.getStatusCodeValue());
+		assertEquals("mock_junit@facebook.com", respostaPUT.getBody().getContatoPorTipo(Tipo.FACEBOOK).getEndereco());
+		assertEquals("mock_email_junit@email.com", respostaPUT.getBody().getEmail());
+
+		ResponseEntity<String> respostaDELETE = clienteTeste.withBasicAuth("admin", "password")
+				.exchange("/v1/usuario/" + respostaPUT.getBody().getId(), HttpMethod.DELETE, null, String.class);
+
 		assertEquals(200, respostaDELETE.getStatusCodeValue());
 	}
 }

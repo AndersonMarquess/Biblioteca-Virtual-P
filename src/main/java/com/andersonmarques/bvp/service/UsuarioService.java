@@ -77,4 +77,9 @@ public class UsuarioService {
 	public List<Usuario> buscarTodos() {
 		return usuarioRepository.findAll();
 	}
+
+	public Usuario atualizar(Usuario usuario) {
+		contatoService.atualizar(usuario.getContatos());
+		return usuarioRepository.save(usuario);
+	}
 }

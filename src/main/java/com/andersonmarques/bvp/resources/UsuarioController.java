@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,5 +48,11 @@ public class UsuarioController {
 	public Mono<ResponseEntity<Void>> removerPorId(@PathVariable("id") String id) {
 		usuarioService.removerPorId(id);
 		return Mono.just(ResponseEntity.ok().build());
+	}
+	
+	@PutMapping(path=V1_BASE_PATH, produces = { "application/json" })
+	public Mono<Usuario> atualizar(@RequestBody Usuario usuario) {
+		Usuario usuarioAtualizado = usuarioService.atualizar(usuario);
+		return Mono.just(usuarioAtualizado);
 	}
 }
