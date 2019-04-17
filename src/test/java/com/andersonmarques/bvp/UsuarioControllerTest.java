@@ -36,7 +36,7 @@ public class UsuarioControllerTest {
 
 	@Test
 	public void autenticacaoComRoleUserParaListarUsuariosRecebe_StatusCode200() {
-		ResponseEntity<String> resposta = clienteTeste.withBasicAuth("necronomicon", "123")
+		ResponseEntity<String> resposta = clienteTeste.withBasicAuth("necronomicon@email.com", "123")
 				.getForEntity("/v1/usuario/all", String.class);
 
 		System.out.println(resposta.getBody());
@@ -56,12 +56,12 @@ public class UsuarioControllerTest {
 
 	@Test
 	public void buscarDetalhesDoUsuarioPorIdComRoleAdminRecebe_StatusCode200() {
-		ResponseEntity<List<UsuarioDTO>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
+		ResponseEntity<List<UsuarioDTO>> usuarios = clienteTeste.withBasicAuth("necronomicon@email.com", "123")
 				.exchange("/v1/usuario/all", HttpMethod.GET, null, getTipoListaDeUsuario());
 
 		UsuarioDTO usuario = usuarios.getBody().get(0);
 
-		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("admin", "password")
+		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("admin@email.com", "password")
 				.getForEntity("/v1/usuario/" + usuario.getId(), Usuario.class);
 
 		assertNotNull(resposta.getBody());
@@ -72,12 +72,12 @@ public class UsuarioControllerTest {
 
 	@Test
 	public void buscarDetalhesDoUsuarioPorIdComRoleUserRecebe_StatusCode403() {
-		ResponseEntity<List<UsuarioDTO>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
+		ResponseEntity<List<UsuarioDTO>> usuarios = clienteTeste.withBasicAuth("necronomicon@email.com", "123")
 				.exchange("/v1/usuario/all", HttpMethod.GET, null, getTipoListaDeUsuario());
 
 		UsuarioDTO usuario = usuarios.getBody().get(0);
 
-		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("necronomicon", "123")
+		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("necronomicon@email.com", "123")
 				.getForEntity("/v1/usuario/" + usuario.getId(), Usuario.class);
 
 		assertEquals(403, resposta.getStatusCodeValue());
@@ -85,11 +85,11 @@ public class UsuarioControllerTest {
 
 	@Test
 	public void verificarPermissoesDoUsuarioPorId() {
-		ResponseEntity<List<UsuarioDTO>> usuarios = clienteTeste.withBasicAuth("necronomicon", "123")
+		ResponseEntity<List<UsuarioDTO>> usuarios = clienteTeste.withBasicAuth("necronomicon@email.com", "123")
 				.exchange("/v1/usuario/all", HttpMethod.GET, null, getTipoListaDeUsuario());
 		String idUsuario = usuarios.getBody().get(0).getId();
 
-		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("admin", "password")
+		ResponseEntity<Usuario> resposta = clienteTeste.withBasicAuth("admin@email.com", "password")
 				.exchange("/v1/usuario/" + idUsuario, HttpMethod.GET, null, Usuario.class);
 
 		assertNotNull(resposta.getBody());
@@ -105,10 +105,10 @@ public class UsuarioControllerTest {
 		headers.add("content-type", "application/json");
 		HttpEntity<Usuario> usuarioEntity = new HttpEntity<>(usuario, headers);
 
-		ResponseEntity<Usuario> respostaPOST = clienteTeste.withBasicAuth("admin", "password").exchange("/v1/usuario",
+		ResponseEntity<Usuario> respostaPOST = clienteTeste.withBasicAuth("admin@email.com", "password").exchange("/v1/usuario",
 				HttpMethod.POST, usuarioEntity, Usuario.class);
 
-		ResponseEntity<String> respostaDELETE = clienteTeste.withBasicAuth("admin", "password")
+		ResponseEntity<String> respostaDELETE = clienteTeste.withBasicAuth("admin@email.com", "password")
 				.exchange("/v1/usuario/" + respostaPOST.getBody().getId(), HttpMethod.DELETE, null, String.class);
 
 		System.out.println(respostaDELETE.getBody());
@@ -125,7 +125,7 @@ public class UsuarioControllerTest {
 		usuario.adicionarContato(new Contato("@mock_junit", Tipo.TWITTER));
 		usuario.adicionarContato(new Contato("mock_junit@fb.com", Tipo.FACEBOOK));
 
-		ResponseEntity<Usuario> respostaPOST = clienteTeste.withBasicAuth("admin", "password").exchange("/v1/usuario",
+		ResponseEntity<Usuario> respostaPOST = clienteTeste.withBasicAuth("admin@email.com", "password").exchange("/v1/usuario",
 				HttpMethod.POST, usuarioEntity_POST, Usuario.class);
 
 		assertEquals(200, respostaPOST.getStatusCodeValue());
@@ -136,7 +136,7 @@ public class UsuarioControllerTest {
 
 		HttpEntity<Usuario> usuarioEntity_PUT = new HttpEntity<>(usuarioPOST, headers);
 
-		ResponseEntity<Usuario> respostaPUT = clienteTeste.withBasicAuth("admin", "password").exchange("/v1/usuario",
+		ResponseEntity<Usuario> respostaPUT = clienteTeste.withBasicAuth("admin@email.com", "password").exchange("/v1/usuario",
 				HttpMethod.PUT, usuarioEntity_PUT, Usuario.class);
 
 		assertNotNull(respostaPUT.getBody());
@@ -144,7 +144,7 @@ public class UsuarioControllerTest {
 		assertEquals("mock_junit@facebook.com", respostaPUT.getBody().getContatoPorTipo(Tipo.FACEBOOK).getEndereco());
 		assertEquals("mock_email_junit@email.com", respostaPUT.getBody().getEmail());
 
-		ResponseEntity<String> respostaDELETE = clienteTeste.withBasicAuth("admin", "password")
+		ResponseEntity<String> respostaDELETE = clienteTeste.withBasicAuth("admin@email.com", "password")
 				.exchange("/v1/usuario/" + respostaPUT.getBody().getId(), HttpMethod.DELETE, null, String.class);
 
 		assertEquals(200, respostaDELETE.getStatusCodeValue());

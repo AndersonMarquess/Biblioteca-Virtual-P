@@ -23,9 +23,10 @@ public class UsuarioService {
 	private PermissaoService permissaoService;
 
 	public Usuario adicionar(Usuario usuario) {
+		verificarDisponibilidadeDeEmail(usuario);
 		criptografarSenha(usuario);
 		adicionarPermissaoPadrao(usuario);
-		
+
 		Usuario userRecuperado = usuarioRepository.save(usuario);
 
 		for (Contato c : usuario.getContatos()) {
@@ -35,6 +36,20 @@ public class UsuarioService {
 		permissaoService.adicionarTodasAsPermissoesNoUsuario(usuario, usuario.getPermissoes());
 
 		return userRecuperado;
+	}
+
+	/**
+	 * Evita que usuários com e-mail repetidos seja adicionados.
+	 * 
+	 * @param usuario
+	 */
+	private void verificarDisponibilidadeDeEmail(Usuario usuario) {
+		Optional<Usuario> usuarioRecuperado = usuarioRepository.findUsuarioByEmail(usuario.getEmail());
+
+		if (usuarioRecuperado.isPresent()) {
+			throw new IllegalArgumentException(
+					String.format("Não é possível usar o e-mail: [ %s ]", usuario.getEmail()));
+		}
 	}
 
 	private void criptografarSenha(Usuario usuario) {
@@ -50,19 +65,19 @@ public class UsuarioService {
 
 	public Usuario buscarUsuarioPorId(String id) {
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
-		
-		if(!usuario.isPresent()) {
+
+		if (!usuario.isPresent()) {
 			throw new IllegalArgumentException("Id inválido");
 		}
-		
+
 		usuario.get().setPermissoes(permissaoService.buscarPermissoesPorIdUsuario(id));
-		
+
 		return usuario.get();
 	}
 
 	public Usuario buscarUsuarioPorEmail(String email) {
 		return usuarioRepository.findUsuarioByEmail(email)
-				.orElseThrow(() -> new IllegalArgumentException("Usuário não contrado"));
+				.orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 	}
 
 	public void removerPorId(String id) {

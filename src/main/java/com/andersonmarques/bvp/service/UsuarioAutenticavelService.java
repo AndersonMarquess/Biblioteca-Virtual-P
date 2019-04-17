@@ -32,11 +32,11 @@ public class UsuarioAutenticavelService implements UserDetailsService {
 	private PermissaoRepository permissaoRepository;
 	
 	@Override
-	public UserDetails loadUserByUsername(String username) {
-		Optional<Usuario> usuario = usuarioRepository.findByNome(username);
+	public UserDetails loadUserByUsername(String email) {
+		Optional<Usuario> usuario = usuarioRepository.findUsuarioByEmail(email);
 		
 		if(!usuario.isPresent()) {
-			throw new NomeDeUsuarioNaoEncontradoException(String.format("Usuário com nome [ %s ] não encontrado.", username));
+			throw new NomeDeUsuarioNaoEncontradoException(String.format("Usuário com e-mail [ %s ] não encontrado.", email));
 		}
 		
 		return montarUserDetails(usuario.get());
@@ -62,7 +62,7 @@ public class UsuarioAutenticavelService implements UserDetailsService {
 	}
 
 	/**
-	 * Retorna todas as Permissoes do usuário com id especificado.
+	 * Retorna todas as Permissões do usuário com id especificado.
 	 * 
 	 * @return
 	 */
@@ -71,7 +71,7 @@ public class UsuarioAutenticavelService implements UserDetailsService {
 		Collection<GrantedAuthority> authorities = new ArrayList<>();
 		permissoes.forEach(
 			p -> authorities.add(
-					() -> p.getNomePermissao()
+				() -> p.getNomePermissao()
 			)
 		);
 		return authorities;
