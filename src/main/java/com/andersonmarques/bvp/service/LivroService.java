@@ -1,5 +1,7 @@
 package com.andersonmarques.bvp.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +28,9 @@ public class LivroService {
 
 	public void removerPorId(String id) {
 		livroRepository.deleteById(id);
+	}
+
+	public List<Livro> buscarTodos() {
+		return livroRepository.findAll();
 	}
 }
