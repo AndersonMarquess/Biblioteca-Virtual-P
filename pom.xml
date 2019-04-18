@@ -7,7 +7,7 @@
 	<artifactId>bvp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>bvp</name>
-	<description>Biblioteca publica virtual</description>
+	<description>Biblioteca virtual pública</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -40,12 +40,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		
-		<!-- Template engine -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 		
 		<!-- Reactive -->

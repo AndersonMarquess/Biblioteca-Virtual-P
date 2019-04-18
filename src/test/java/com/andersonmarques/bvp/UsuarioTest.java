@@ -180,8 +180,8 @@ public class UsuarioTest {
 	}
 
 	@Test
-	public void buscarUserDetailsPorNome() {
-		UserDetails userDetails = usuarioAutenticavelService.loadUserByUsername("necronomicon");
+	public void buscarUserDetailsPorEmail() {
+		UserDetails userDetails = usuarioAutenticavelService.loadUserByUsername("necronomicon@email.com");
 
 		assertTrue(new BCryptPasswordEncoder().matches("123", userDetails.getPassword()));
 		assertTrue(userDetails.getAuthorities().stream().anyMatch(p -> p.getAuthority().equals("ROLE_USER")));
@@ -200,7 +200,7 @@ public class UsuarioTest {
 	
 	@Test
 	public void verificarSenhaDoUsuario() {
-		String criptografado = BCrypt.hashpw("123", BCrypt.gensalt(15));
+		String criptografado = BCrypt.hashpw("123", BCrypt.gensalt(5));
 		String encodada = new BCryptPasswordEncoder().encode("123");
 		
 		System.out.println("Senha criptografada: "+criptografado);
