@@ -2,6 +2,7 @@ package com.andersonmarques.bvp.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,10 +23,9 @@ public class SegurancaConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UsuarioAutenticavelService usuarioAutenticavelService;
 	
-	//private final String PUBLIC_ENDPOINTS[] = { "/**" };
-	private final String AUTHENTICATED_ENDPOINTS[] = { "/v1/usuario/all", "/v1/livro/all" };
-	private final String ADMIN_ENDPOINTS[] = { "/v1/usuario/**", "/v1/livro/**" };
-	
+	private final String PUBLIC_ENDPOINTS[] = { "/v1/usuario" };
+	private final String AUTHENTICATED_ENDPOINTS[] = { "/v1/usuario/all", "/v1/livro/**" };
+	private final String ADMIN_ENDPOINTS[] = { "/v1/usuario/**" };
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -38,6 +38,7 @@ public class SegurancaConfig extends WebSecurityConfigurerAdapter {
 	    		.authenticationEntryPoint(restAuthenticationEntryPoint)
 	    	.and()
 			    .authorizeRequests()
+			    .antMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
 			    .antMatchers(AUTHENTICATED_ENDPOINTS).authenticated()
 			    .antMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
 		    .and()
