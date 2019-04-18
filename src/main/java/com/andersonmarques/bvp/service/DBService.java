@@ -29,21 +29,32 @@ public class DBService implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		mongoTemplate.getDb().drop();
-		System.out.println(
-				String.format("Drop Banco [ %s ] tentando persistir informações", DBService.class.getSimpleName()));
-		popularBanco();
+		//popularBanco();
 	}
 
 	private void popularBanco() {
-		criarUsuarios();
-		criarLivros();
-	}
+		// Dropa o banco
+		mongoTemplate.getDb().drop();
 
-	private void criarLivros() {
-		Livro livro1 = new Livro("351-456-4571", "Dinastia M", "Descrição do livro", "urlCapaDoLivro");
-		Livro livro2 = new Livro("421-351-571", "Y o último homem", "Descrição do livro", "urlCapaDoLivro");
-		Livro livro3 = new Livro("51-456-4571", "Demolidor", "Descrição do livro", "urlCapaDoLivro");
+		Usuario pessoa1 = new Usuario("admin", "password", "admin@email.com");
+		pessoa1.adicionarContato(new Contato("admin_social@fb.com", Tipo.FACEBOOK));
+		pessoa1.adicionarPermissao(new Permissao("USER"), new Permissao("ADMIN"));
+
+		Usuario pessoa2 = new Usuario("necronomicon", "123", "necronomicon@email.com");
+		pessoa2.adicionarContato(new Contato("necrono@fb.com", Tipo.FACEBOOK));
+		pessoa2.adicionarPermissao(new Permissao("USER"), new Permissao("MASTER"));
+
+		Usuario pessoa3 = new Usuario("faraday", "password", "faraday@email.com");
+		pessoa3.adicionarContato(new Contato("faraday@fb.com", Tipo.FACEBOOK));
+		pessoa3.adicionarPermissao(new Permissao("USER"), new Permissao("ADMIN"));
+
+		pessoa1 = usuarioService.adicionar(pessoa1);
+		pessoa2 = usuarioService.adicionar(pessoa2);
+		pessoa3 = usuarioService.adicionar(pessoa3);
+
+		Livro livro1 = new Livro("351-456-4571", "Dinastia M", "Descrição do livro", "urlCapaDoLivro", pessoa1.getId());
+		Livro livro2 = new Livro("421-351-571", "Y o último homem", "Descrição", "urlCapaDoLivro", pessoa2.getId());
+		Livro livro3 = new Livro("51-456-4571", "Demolidor", "Descrição do livro", "urlCapaDoLivro", pessoa3.getId());
 
 		Categoria ficcao = new Categoria("Ficção científica");
 		Categoria aventura = new Categoria("Aventura");
@@ -57,23 +68,5 @@ public class DBService implements CommandLineRunner {
 		livroService.adicionar(livro2);
 		livroService.adicionar(livro3);
 		categoriaRepository.saveAll(Arrays.asList(ficcao, aventura, superHeroi));
-	}
-
-	private void criarUsuarios() {
-		Usuario pessoa1 = new Usuario("admin", "password", "admin@email.com");
-		pessoa1.adicionarContato(new Contato("admin_social@rede.com", Tipo.TWITTER));
-		pessoa1.adicionarPermissao(new Permissao("USER"), new Permissao("ADMIN"));
-		
-		Usuario pessoa2 = new Usuario("necronomicon", "123", "necronomicon@email.com");
-		pessoa2.adicionarContato(new Contato("necrono@micon.com", Tipo.TWITTER));
-		pessoa2.adicionarPermissao(new Permissao("USER"), new Permissao("MASTER"));
-
-		Usuario pessoa3 = new Usuario("faraday", "password", "faraday@email.com");
-		pessoa3.adicionarContato(new Contato("faraday@twitter.com", Tipo.TWITTER));
-		pessoa3.adicionarPermissao(new Permissao("USER"), new Permissao("ADMIN"));
-
-		usuarioService.adicionar(pessoa1);
-		usuarioService.adicionar(pessoa2);
-		usuarioService.adicionar(pessoa3);
 	}
 }

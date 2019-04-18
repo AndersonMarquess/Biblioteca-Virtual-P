@@ -11,29 +11,32 @@ import com.andersonmarques.bvp.exception.CategoriaDuplicadaException;
 
 @Document
 public class Livro {
-	
+
 	@Id
 	private String id;
 	private String isbn;
 	private String titulo;
 	private String descricao;
 	private String urlCapa;
-	@DBRef(lazy=false)
+	@DBRef(lazy = false)
 	private List<Categoria> categorias = new ArrayList<>();
-	
-	public Livro() {}
+	private String idDonoLivro;
 
-	public Livro(String isbn, String titulo, String descricao, String urlCapa) {
+	public Livro() {
+	}
+
+	public Livro(String isbn, String titulo, String descricao, String urlCapa, String idDonoLivro) {
 		this.isbn = isbn;
 		this.titulo = titulo;
 		this.descricao = descricao;
 		this.urlCapa = urlCapa;
+		this.idDonoLivro = idDonoLivro;
 	}
 
 	public String getId() {
 		return id;
 	}
-	
+
 	public String getIsbn() {
 		return isbn;
 	}
@@ -68,8 +71,8 @@ public class Livro {
 
 	public void adicionarCategoria(Categoria... categoria) {
 		for (Categoria cat : categoria) {
-			if(categorias.contains(cat)) {
-				throw new CategoriaDuplicadaException("A Categoria ["+cat+"]já foi adicionada.");
+			if (categorias.contains(cat)) {
+				throw new CategoriaDuplicadaException("A Categoria [" + cat + "] já foi adicionada.");
 			}
 			categorias.add(cat);
 		}
@@ -77,5 +80,13 @@ public class Livro {
 
 	public List<Categoria> getCategorias() {
 		return categorias;
+	}
+
+	public String getIdDonoLivro() {
+		return idDonoLivro;
+	}
+
+	public void setIdDonoLivro(String idDonoLivro) {
+		this.idDonoLivro = idDonoLivro;
 	}
 }

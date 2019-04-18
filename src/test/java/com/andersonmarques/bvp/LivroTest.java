@@ -50,7 +50,7 @@ public class LivroTest {
 	@Test
 	public void verificarDadosDoLivro() {
 		Livro livro = new Livro("1234-5698-4512-4521", "Livro 1", "Livro sobre assuntos diversificados",
-				"https://images.pexels.com/photos/1643113/pexels-photo-1643113.jpeg");
+				"https://images.pexels.com/photos/1643113/pexels-photo-1643113.jpeg", null);
 
 		assertEquals("1234-5698-4512-4521", livro.getIsbn());
 		assertEquals("Livro 1", livro.getTitulo());
@@ -89,7 +89,7 @@ public class LivroTest {
 
 	@Test
 	public void persistirRecuperarERemoverUmLivroComCategoriaNoBanco() {
-		livro = new Livro("55-5554-1111", "Livro padrão 11", "Descrição do livro padrão 1", "");
+		livro = new Livro("55-5554-1111", "Livro padrão 11", "Descrição do livro padrão 1", "", null);
 		livro.adicionarCategoria(new Categoria("Categoria 1"), new Categoria("Programação"));
 		livroService.adicionar(livro);
 		Livro livroRecuperado = livroService.buscarPorTitulo("Livro padrão 11");
@@ -106,7 +106,7 @@ public class LivroTest {
 	
 	@Test
 	public void adicionarUmaCategoriaExistenteEmUmNovoLivro() {
-		livro = new Livro("551", "Livro mock", "adicionar categoria existente em livro", "");
+		livro = new Livro("551", "Livro mock", "adicionar categoria existente em livro", "", null);
 		livro.adicionarCategoria(new Categoria("Programação"));
 		Livro livroRecuperado = livroService.adicionar(livro);
 		List<Categoria> categorias = categoriaService.buscarTodasCategoriasPorIdLivro(livroRecuperado.getId());
