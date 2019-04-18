@@ -19,11 +19,11 @@ public class Contato {
 	private String endereco;
 
 	public Contato() {
-		id = UUID.randomUUID().toString();
+		this.id = UUID.randomUUID().toString();
 	}
 
 	public Contato(String endereco, Tipo tipo) {
-		id = UUID.randomUUID().toString();
+		this();
 		this.endereco = endereco;
 		this.tipo = tipo.getId();
 	}

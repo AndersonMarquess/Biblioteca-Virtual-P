@@ -22,12 +22,11 @@ public class Permissao {
 	private Set<Usuario> usuarios = new HashSet<>();
 
 	public Permissao() {
-		id = UUID.randomUUID().toString();
+		this.id = UUID.randomUUID().toString();
 	}
 
 	public Permissao(String nomePermissao) {
-		id = UUID.randomUUID().toString();
-		
+		this();
 		padronizarNomePermissao(nomePermissao);
 	}
 

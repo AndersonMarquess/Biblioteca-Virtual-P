@@ -20,10 +20,11 @@ public class Categoria {
 	private Set<Livro> livros = new HashSet<>();
 
 	public Categoria() {
+		this.id = UUID.randomUUID().toString();
 	}
 
 	public Categoria(String nome) {
-		id = UUID.randomUUID().toString();
+		this();
 		this.nome = nome;
 	}
 

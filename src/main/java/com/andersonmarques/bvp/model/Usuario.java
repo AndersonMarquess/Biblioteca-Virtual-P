@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -26,9 +27,11 @@ public class Usuario {
 	private Set<Permissao> permissoes = new HashSet<>();
 
 	public Usuario() {
+		this.id = UUID.randomUUID().toString();
 	}
 
 	public Usuario(String nome, String senha, String email) {
+		this();
 		this.nome = nome;
 		this.senha = senha;
 		this.email = email;

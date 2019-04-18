@@ -2,6 +2,7 @@ package com.andersonmarques.bvp.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -23,9 +24,11 @@ public class Livro {
 	private String idDonoLivro;
 
 	public Livro() {
+		this.id = UUID.randomUUID().toString();
 	}
 
 	public Livro(String isbn, String titulo, String descricao, String urlCapa, String idDonoLivro) {
+		this();
 		this.isbn = isbn;
 		this.titulo = titulo;
 		this.descricao = descricao;
