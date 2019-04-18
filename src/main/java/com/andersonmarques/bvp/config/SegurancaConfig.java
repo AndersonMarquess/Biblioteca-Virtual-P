@@ -23,8 +23,8 @@ public class SegurancaConfig extends WebSecurityConfigurerAdapter {
 	private UsuarioAutenticavelService usuarioAutenticavelService;
 	
 	//private final String PUBLIC_ENDPOINTS[] = { "/**" };
-	private final String AUTHENTICATED_ENDPOINTS[] = { "/v1/usuario/all" };
-	private final String ADMIN_ENDPOINTS[] = { "/v1/usuario/**" };
+	private final String AUTHENTICATED_ENDPOINTS[] = { "/v1/usuario/all", "/v1/livro/all" };
+	private final String ADMIN_ENDPOINTS[] = { "/v1/usuario/**", "/v1/livro/**" };
 	
 
 	@Override
