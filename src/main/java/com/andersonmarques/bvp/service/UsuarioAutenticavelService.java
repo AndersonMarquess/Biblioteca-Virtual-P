@@ -18,7 +18,7 @@ import com.andersonmarques.bvp.repository.PermissaoRepository;
 import com.andersonmarques.bvp.repository.UsuarioRepository;
 
 /**
- * Classe para fazer gerenciamento de dados para usuários com autênticação.
+ * Classe para fazer gerenciamento de dados para usuários com autenticação.
  * 
  * @author Anderson Marques
  *
@@ -51,7 +51,7 @@ public class UsuarioAutenticavelService implements UserDetailsService {
 	 */
 	private UserDetails montarUserDetails(Usuario usuario) {
 		return org.springframework.security.core.userdetails.User
-                .withUsername(usuario.getNome())
+                .withUsername(usuario.getEmail())
                 .password(usuario.getSenha())
                 .authorities(getPermissoesPorIdUsuario(usuario.getId()))
                 .accountExpired(false)
