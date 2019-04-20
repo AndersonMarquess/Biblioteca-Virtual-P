@@ -24,23 +24,23 @@ public class SegurancaConfig extends WebSecurityConfigurerAdapter {
 	private UsuarioAutenticavelService usuarioAutenticavelService;
 	
 	private final String PUBLIC_ENDPOINTS[] = { "/v1/usuario" };
-	private final String AUTHENTICATED_ENDPOINTS[] = { "/v1/usuario/all", "/v1/livro/**" };
-	private final String ADMIN_ENDPOINTS[] = { "/v1/usuario/**" };
+	private final String AUTHENTICATED_ENDPOINTS[] = { "/v1/usuario/**", "/v1/livro/**" };
+	private final String ADMIN_ENDPOINTS[] = { "/v1/usuario/all" };
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 	    http.httpBasic()
 	    	.and()
 				// Se nenhum ponto de entrada for definido ao tentar fazer login com as
-				// credênciais inválidas, uma página html é retornada.
+				// credenciais inválidas, uma página html é retornada.
 	    		// Com a definição será retornado 401 Unauthorized.
 	    		.exceptionHandling()
 	    		.authenticationEntryPoint(restAuthenticationEntryPoint)
 	    	.and()
 			    .authorizeRequests()
 			    .antMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-			    .antMatchers(AUTHENTICATED_ENDPOINTS).authenticated()
 			    .antMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
+			    .antMatchers(AUTHENTICATED_ENDPOINTS).authenticated()
 		    .and()
 			    .formLogin()
 			    //SuccessHandler personalizado para retornar com status code 200 (padrão é 301)
