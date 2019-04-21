@@ -12,6 +12,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.andersonmarques.bvp.model.enums.Tipo;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Document
 public class Usuario {
@@ -88,4 +90,21 @@ public class Usuario {
 	public void setPermissoes(Set<Permissao> permissoes) {
 		this.permissoes = permissoes;
 	}
+
+	public String gerarJSON() {
+		try {
+			return new ObjectMapper().writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return "Erro ao gerar json";
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Usuario [id=%s, nome=%s, senha=%s, email=%s, contatos=%s, permissoes=%s]", id, nome,
+				senha, email, contatos, permissoes);
+	}
+	
+	
 }
