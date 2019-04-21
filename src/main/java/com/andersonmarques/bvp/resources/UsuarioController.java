@@ -3,7 +3,10 @@ package com.andersonmarques.bvp.resources;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.andersonmarques.bvp.dto.UsuarioDTO;
 import com.andersonmarques.bvp.model.Usuario;
+import com.andersonmarques.bvp.security.EndpointUtil;
 import com.andersonmarques.bvp.service.UsuarioService;
 
 import reactor.core.publisher.Flux;
@@ -42,20 +46,34 @@ public class UsuarioController {
 	}
 
 	@GetMapping(path = V1_BASE_PATH + "/{id}", produces = { "application/json" })
-	public Mono<Usuario> buscarInfoPorId(@PathVariable("id") String id) {
+	public ResponseEntity<Mono<String>> buscarInfoPorId(@PathVariable("id") String id, HttpServletRequest request) {
+		if (!EndpointUtil.isUsuarioPermitido(id, usuarioService)) {
+			return getRespostaComStatusCode401(request);
+		}
 		Usuario usuarioResposta = usuarioService.buscarUsuarioPorId(id);
-		return Mono.just(usuarioResposta);
+		return ResponseEntity.ok(Mono.just(usuarioResposta.gerarJSON()));
 	}
-	
+
 	@DeleteMapping(path = V1_BASE_PATH + "/{id}", produces = { "application/json" })
-	public Mono<ResponseEntity<Void>> removerPorId(@PathVariable("id") String id) {
+	public ResponseEntity<Mono<String>> removerPorId(@PathVariable("id") String id, HttpServletRequest request) {
+		if (!EndpointUtil.isUsuarioPermitido(id, usuarioService)) {
+			return getRespostaComStatusCode401(request);
+		}
 		usuarioService.removerPorId(id);
-		return Mono.just(ResponseEntity.ok().build());
+		return ResponseEntity.ok(Mono.empty());
 	}
-	
-	@PutMapping(path=V1_BASE_PATH, produces = { "application/json" })
-	public Mono<Usuario> atualizar(@RequestBody Usuario usuario) {
+
+	@PutMapping(path = V1_BASE_PATH, produces = { "application/json" })
+	public ResponseEntity<Mono<String>> atualizar(@RequestBody Usuario usuario, HttpServletRequest request) {
+		if (!EndpointUtil.isUsuarioPermitido(usuario.getId(), usuarioService)) {
+			return getRespostaComStatusCode401(request);
+		}
 		Usuario usuarioAtualizado = usuarioService.atualizar(usuario);
-		return Mono.just(usuarioAtualizado);
+		return ResponseEntity.ok(Mono.just(usuarioAtualizado.gerarJSON()));
+	}
+
+	private ResponseEntity<Mono<String>> getRespostaComStatusCode401(HttpServletRequest request) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				.body(Mono.just(EndpointUtil.getJsonParaUnauthorized401(request.getRequestURI())));
 	}
 }

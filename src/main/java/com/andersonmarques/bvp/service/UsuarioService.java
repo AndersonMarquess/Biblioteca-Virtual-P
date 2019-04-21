@@ -76,8 +76,15 @@ public class UsuarioService {
 	}
 
 	public Usuario buscarUsuarioPorEmail(String email) {
-		return usuarioRepository.findUsuarioByEmail(email)
-				.orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+		Optional<Usuario> usuario = usuarioRepository.findUsuarioByEmail(email);
+
+		if (!usuario.isPresent()) {
+			throw new IllegalArgumentException("Usuário não encontrado");
+		}
+
+		usuario.get().setPermissoes(permissaoService.buscarPermissoesPorIdUsuario(usuario.get().getId()));
+
+		return usuario.get();
 	}
 
 	public void removerPorId(String id) {
