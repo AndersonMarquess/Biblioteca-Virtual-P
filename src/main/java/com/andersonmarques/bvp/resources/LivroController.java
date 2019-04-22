@@ -1,7 +1,11 @@
 package com.andersonmarques.bvp.resources;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,14 +25,19 @@ public class LivroController {
 	private LivroService livroService;
 
 	@GetMapping(path = V1_BASE_PATH + "/all", produces = { "application/json" })
-	public Flux<Livro> buscarTodos() {
-		return Flux.fromIterable(livroService.buscarTodos());
+	public ResponseEntity<Flux<Livro>> buscarTodos() {
+		return ResponseEntity.ok(Flux.fromIterable(livroService.buscarTodos()));
 	}
 
 	@PostMapping(path = V1_BASE_PATH, produces = { "application/json" })
-	public Mono<Livro> adicionar(@RequestBody Livro livro) {
+	public ResponseEntity<Mono<Livro>> adicionar(@RequestBody Livro livro) {
 		Livro livroResposta = livroService.adicionar(livro);
-		return Mono.just(livroResposta);
+		return ResponseEntity.ok(Mono.just(livroResposta));
 	}
 
+	@GetMapping(path = V1_BASE_PATH + "/all/{id}", produces = { "application/json" })
+	public ResponseEntity<Flux<Livro>> buscarLivrosDoUsuarioPorId(@PathVariable("id") String id) {
+		List<Livro> livros = livroService.buscarLivrosPorIdUsuario(id);
+		return ResponseEntity.ok(Flux.fromIterable(livros));
+	}
 }

@@ -33,4 +33,8 @@ public class LivroService {
 	public List<Livro> buscarTodos() {
 		return livroRepository.findAll();
 	}
+
+	public List<Livro> buscarLivrosPorIdUsuario(String id) {
+		return livroRepository.findAllByIdDonoLivro(id);
+	}
 }
