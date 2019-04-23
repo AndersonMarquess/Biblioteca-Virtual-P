@@ -2,8 +2,11 @@ package com.andersonmarques.bvp.resources;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.andersonmarques.bvp.model.Livro;
+import com.andersonmarques.bvp.security.EndpointUtil;
 import com.andersonmarques.bvp.service.LivroService;
+import com.andersonmarques.bvp.service.UsuarioService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,6 +28,8 @@ public class LivroController {
 
 	@Autowired
 	private LivroService livroService;
+	@Autowired
+	private UsuarioService usuarioService;
 
 	@GetMapping(path = V1_BASE_PATH + "/all", produces = { "application/json" })
 	public ResponseEntity<Flux<Livro>> buscarTodos() {
@@ -39,5 +46,17 @@ public class LivroController {
 	public ResponseEntity<Flux<Livro>> buscarLivrosDoUsuarioPorId(@PathVariable("id") String id) {
 		List<Livro> livros = livroService.buscarLivrosPorIdUsuario(id);
 		return ResponseEntity.ok(Flux.fromIterable(livros));
+	}
+
+	@DeleteMapping(path = V1_BASE_PATH + "/{id}", produces = { "application/json" })
+	public ResponseEntity<Mono<String>> removerPorId(@PathVariable("id") String id, HttpServletRequest request) {
+		Livro livro = livroService.buscarPorId(id);
+
+		if (!EndpointUtil.isUsuarioPermitido(livro.getIdDonoLivro(), usuarioService)) {
+			return EndpointUtil.getRespostaComStatusCode401(request);
+		}
+
+		livroService.removerPorId(id);
+		return ResponseEntity.ok(Mono.empty());
 	}
 }

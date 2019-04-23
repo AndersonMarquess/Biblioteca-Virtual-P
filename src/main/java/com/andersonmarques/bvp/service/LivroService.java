@@ -37,4 +37,8 @@ public class LivroService {
 	public List<Livro> buscarLivrosPorIdUsuario(String id) {
 		return livroRepository.findAllByIdDonoLivro(id);
 	}
+
+	public Livro buscarPorId(String id) {
+		return livroRepository.findById(id).get();
+	}
 }
