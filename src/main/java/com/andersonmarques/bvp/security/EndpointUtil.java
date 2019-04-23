@@ -2,11 +2,17 @@ package com.andersonmarques.bvp.security;
 
 import java.time.LocalDateTime;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.andersonmarques.bvp.model.Usuario;
 import com.andersonmarques.bvp.service.UsuarioService;
+
+import reactor.core.publisher.Mono;
 
 /**
  * Classe responsável por disponibilizar verificações e validações.
@@ -49,5 +55,10 @@ public class EndpointUtil {
 				+ "\"message\":\"Unauthorized\","
 				+ "\"path\":\"" + caminho + "\"}";
 		return json;
+	}
+	
+	public static ResponseEntity<Mono<String>> getRespostaComStatusCode401(HttpServletRequest request) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				.body(Mono.just(getJsonParaUnauthorized401(request.getRequestURI())));
 	}
 }

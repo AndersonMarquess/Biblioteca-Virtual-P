@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +47,7 @@ public class UsuarioController {
 	@GetMapping(path = V1_BASE_PATH + "/{id}", produces = { "application/json" })
 	public ResponseEntity<Mono<String>> buscarInfoPorId(@PathVariable("id") String id, HttpServletRequest request) {
 		if (!EndpointUtil.isUsuarioPermitido(id, usuarioService)) {
-			return getRespostaComStatusCode401(request);
+			return EndpointUtil.getRespostaComStatusCode401(request);
 		}
 		Usuario usuarioResposta = usuarioService.buscarUsuarioPorId(id);
 		return ResponseEntity.ok(Mono.just(usuarioResposta.gerarJSON()));
@@ -57,7 +56,7 @@ public class UsuarioController {
 	@DeleteMapping(path = V1_BASE_PATH + "/{id}", produces = { "application/json" })
 	public ResponseEntity<Mono<String>> removerPorId(@PathVariable("id") String id, HttpServletRequest request) {
 		if (!EndpointUtil.isUsuarioPermitido(id, usuarioService)) {
-			return getRespostaComStatusCode401(request);
+			return EndpointUtil.getRespostaComStatusCode401(request);
 		}
 		usuarioService.removerPorId(id);
 		return ResponseEntity.ok(Mono.empty());
@@ -66,14 +65,9 @@ public class UsuarioController {
 	@PutMapping(path = V1_BASE_PATH, produces = { "application/json" })
 	public ResponseEntity<Mono<String>> atualizar(@RequestBody Usuario usuario, HttpServletRequest request) {
 		if (!EndpointUtil.isUsuarioPermitido(usuario.getId(), usuarioService)) {
-			return getRespostaComStatusCode401(request);
+			return EndpointUtil.getRespostaComStatusCode401(request);
 		}
 		Usuario usuarioAtualizado = usuarioService.atualizar(usuario);
 		return ResponseEntity.ok(Mono.just(usuarioAtualizado.gerarJSON()));
-	}
-
-	private ResponseEntity<Mono<String>> getRespostaComStatusCode401(HttpServletRequest request) {
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-				.body(Mono.just(EndpointUtil.getJsonParaUnauthorized401(request.getRequestURI())));
 	}
 }
