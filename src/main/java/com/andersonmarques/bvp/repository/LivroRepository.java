@@ -14,4 +14,6 @@ public interface LivroRepository extends MongoRepository<Livro, String> {
 
 	List<Livro> findAllByIdDonoLivro(String id);
 
+	void deleteAllByIdDonoLivro(String id);
+
 }

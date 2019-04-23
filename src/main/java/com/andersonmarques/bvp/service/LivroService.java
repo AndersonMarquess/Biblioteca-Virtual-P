@@ -41,4 +41,8 @@ public class LivroService {
 	public Livro buscarPorId(String id) {
 		return livroRepository.findById(id).get();
 	}
+
+	public void removerLivrosDoUsuarioComId(String id) {
+		livroRepository.deleteAllByIdDonoLivro(id);
+	}
 }

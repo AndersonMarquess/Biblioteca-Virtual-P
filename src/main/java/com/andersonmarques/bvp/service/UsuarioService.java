@@ -21,6 +21,8 @@ public class UsuarioService {
 	private ContatoService contatoService;
 	@Autowired
 	private PermissaoService permissaoService;
+	@Autowired
+	private LivroService livroService;
 
 	public Usuario adicionar(Usuario usuario) {
 		verificarDisponibilidadeDeEmail(usuario);
@@ -90,7 +92,8 @@ public class UsuarioService {
 	public void removerPorId(String id) {
 		Usuario usuario = buscarUsuarioPorId(id);
 		usuarioRepository.deleteById(id);
-
+		livroService.removerLivrosDoUsuarioComId(id);
+		
 		for (Contato c : usuario.getContatos()) {
 			contatoService.removerPorId(c.getId());
 		}

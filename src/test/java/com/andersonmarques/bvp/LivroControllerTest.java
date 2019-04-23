@@ -169,4 +169,30 @@ public class LivroControllerTest {
 				.exchange("/v1/usuario/" + usuario.getId(), HttpMethod.DELETE, null, String.class);
 		assertEquals(200, usuarioDELETE.getStatusCodeValue());
 	}
+	
+	@Test
+	public void apagarUsuarioTambemRemoveSeusLivros() {
+		/* Criação dos mocks */
+		Usuario usuario = new Usuario("u", "1", "u@1.com");
+		ResponseEntity<Usuario> usuarioPOST = clienteTest.exchange("/v1/usuario", HttpMethod.POST,
+				new HttpEntity<>(usuario, headers), Usuario.class);
+		assertEquals(200, usuarioPOST.getStatusCodeValue());
+
+		Livro livro = new Livro("4", "S", "L", "url", usuarioPOST.getBody().getId());
+		livro.adicionarCategoria(new Categoria("Q"));
+
+		ResponseEntity<Livro> livroPOST = clienteTest.withBasicAuth(usuario.getEmail(), usuario.getSenha())
+				.exchange("/v1/livro", HttpMethod.POST, new HttpEntity<>(livro, headers), Livro.class);
+		assertEquals(200, livroPOST.getStatusCodeValue());
+
+		/* Remover criações */
+		ResponseEntity<String> usuarioDELETE = clienteTest.withBasicAuth(usuario.getEmail(), usuario.getSenha())
+				.exchange("/v1/usuario/" + usuario.getId(), HttpMethod.DELETE, null, String.class);
+		assertEquals(200, usuarioDELETE.getStatusCodeValue());
+		
+		ResponseEntity<List<Livro>> respostaLivrosDoUsuario = clienteTest.withBasicAuth("admin@email.com", "password")
+				.exchange("/v1/livro/all/" + usuario.getId(), HttpMethod.GET, null, getTipoListaDeLivros());
+		assertEquals(0, respostaLivrosDoUsuario.getBody().size());
+		assertEquals(200, respostaLivrosDoUsuario.getStatusCodeValue());
+	}
 }
