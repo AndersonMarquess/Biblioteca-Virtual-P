@@ -2,6 +2,7 @@ package com.andersonmarques.bvp.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -9,6 +10,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.andersonmarques.bvp.exception.CategoriaDuplicadaException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Document
 public class Livro {
@@ -18,8 +21,8 @@ public class Livro {
 	private String isbn;
 	private String titulo;
 	private String descricao;
-	private String urlCapa;
-	@DBRef(lazy = false)
+    private String urlCapa;
+    @DBRef(lazy = false)
 	private List<Categoria> categorias = new ArrayList<>();
 	private String idDonoLivro;
 
@@ -91,5 +94,28 @@ public class Livro {
 
 	public void setIdDonoLivro(String idDonoLivro) {
 		this.idDonoLivro = idDonoLivro;
+	}
+
+	public String gerarJSON() {
+		String json = "";
+		try {
+			json = new ObjectMapper().writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return json;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Livro livro = (Livro) o;
+		return id.equals(livro.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

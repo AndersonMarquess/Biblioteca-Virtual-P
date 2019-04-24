@@ -1,8 +1,5 @@
 package com.andersonmarques.bvp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.List;
 
 import org.junit.Before;
@@ -23,6 +20,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.andersonmarques.bvp.model.Categoria;
 import com.andersonmarques.bvp.model.Livro;
 import com.andersonmarques.bvp.model.Usuario;
+
+import static org.junit.Assert.*;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -169,7 +168,7 @@ public class LivroControllerTest {
 				.exchange("/v1/usuario/" + usuario.getId(), HttpMethod.DELETE, null, String.class);
 		assertEquals(200, usuarioDELETE.getStatusCodeValue());
 	}
-	
+
 	@Test
 	public void apagarUsuarioTambemRemoveSeusLivros() {
 		/* Criação dos mocks */
@@ -189,10 +188,50 @@ public class LivroControllerTest {
 		ResponseEntity<String> usuarioDELETE = clienteTest.withBasicAuth(usuario.getEmail(), usuario.getSenha())
 				.exchange("/v1/usuario/" + usuario.getId(), HttpMethod.DELETE, null, String.class);
 		assertEquals(200, usuarioDELETE.getStatusCodeValue());
-		
+
 		ResponseEntity<List<Livro>> respostaLivrosDoUsuario = clienteTest.withBasicAuth("admin@email.com", "password")
 				.exchange("/v1/livro/all/" + usuario.getId(), HttpMethod.GET, null, getTipoListaDeLivros());
 		assertEquals(0, respostaLivrosDoUsuario.getBody().size());
 		assertEquals(200, respostaLivrosDoUsuario.getStatusCodeValue());
+	}
+
+	@Test
+	public void usuarioAtualizarDadosDoSeuLivroRecebe_StatusCode200() {
+		Usuario usuario = new Usuario("u", "1", "u@1.com");
+		ResponseEntity<Usuario> usuarioPOST = clienteTest.exchange("/v1/usuario", HttpMethod.POST,
+				new HttpEntity<>(usuario, headers), Usuario.class);
+		assertEquals(200, usuarioPOST.getStatusCodeValue());
+
+		Livro livro = new Livro("4", "S", "L", "url", usuarioPOST.getBody().getId());
+		livro.adicionarCategoria(new Categoria("Q"));
+		ResponseEntity<Livro> livroPOST = clienteTest.withBasicAuth(usuario.getEmail(), usuario.getSenha())
+				.exchange("/v1/livro", HttpMethod.POST, new HttpEntity<>(livro, headers), Livro.class);
+		assertEquals(200, livroPOST.getStatusCodeValue());
+
+		livro = livroPOST.getBody();
+		livro.setDescricao("Desc atualizado");
+		livro.setTitulo("Atualização");
+		livro.getCategorias().get(0).setNome("de Q para QUE");
+		livro.adicionarCategoria(new Categoria("Nova categoria pós atualização"));
+
+
+		ResponseEntity<Livro> livroPUT = clienteTest.withBasicAuth(usuario.getEmail(), usuario.getSenha())
+				.exchange("/v1/livro", HttpMethod.PUT, new HttpEntity<>(livro, headers), Livro.class);
+		assertEquals(200, livroPUT.getStatusCodeValue());
+
+		ResponseEntity<List<Livro>> respostaLivrosDoUsuario = clienteTest
+				.withBasicAuth(usuario.getEmail(), usuario.getSenha())
+				.exchange("/v1/livro/all/" + usuario.getId(), HttpMethod.GET, null, getTipoListaDeLivros());
+		assertNotNull(respostaLivrosDoUsuario.getBody());
+
+		Livro livroAposUpdate = respostaLivrosDoUsuario.getBody().get(0);
+		assertEquals(livro.getId(), livroAposUpdate.getId());
+		assertEquals(livro.getDescricao(), livroAposUpdate.getDescricao());
+		assertTrue(livroAposUpdate.getCategorias().stream().anyMatch(c -> c.getNome().equals("de Q para QUE")));
+		assertTrue(livroAposUpdate.getCategorias().stream().anyMatch(c -> c.getNome().equals("Nova categoria pós atualização")));
+
+		ResponseEntity<String> usuarioDELETE = clienteTest.withBasicAuth(usuario.getEmail(), usuario.getSenha())
+				.exchange("/v1/usuario/" + usuario.getId(), HttpMethod.DELETE, null, String.class);
+		assertEquals(200, usuarioDELETE.getStatusCodeValue());
 	}
 }

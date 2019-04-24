@@ -10,39 +10,44 @@ import com.andersonmarques.bvp.repository.LivroRepository;
 
 @Service
 public class LivroService {
-	
-	@Autowired
-	private LivroRepository livroRepository;
-	@Autowired
-	private CategoriaService categoriaService;
 
-	public Livro adicionar(Livro livro) {
-		Livro livroRecuperado = livroRepository.save(livro);
-		categoriaService.adicionarTodasAsCategoriaNoLivro(livro, livro.getCategorias());
-		return livroRecuperado;
-	}
+    @Autowired
+    private LivroRepository livroRepository;
+    @Autowired
+    private CategoriaService categoriaService;
 
-	public Livro buscarPorTitulo(String titulo) {
-		return livroRepository.findFirstLivroByTituloContainsIgnoreCase(titulo);
-	}
+    public Livro adicionar(Livro livro) {
+        Livro livroRecuperado = livroRepository.save(livro);
+        categoriaService.adicionarTodasAsCategoriaNoLivro(livro, livro.getCategorias());
+        return livroRecuperado;
+    }
 
-	public void removerPorId(String id) {
-		livroRepository.deleteById(id);
-	}
+    public Livro buscarPorTitulo(String titulo) {
+        return livroRepository.findFirstLivroByTituloContainsIgnoreCase(titulo);
+    }
 
-	public List<Livro> buscarTodos() {
+    public void removerPorId(String id) {
+        livroRepository.deleteById(id);
+    }
+
+    public List<Livro> buscarTodos() {
 		return livroRepository.findAll();
-	}
+    }
 
-	public List<Livro> buscarLivrosPorIdUsuario(String id) {
-		return livroRepository.findAllByIdDonoLivro(id);
-	}
+    public List<Livro> buscarLivrosPorIdUsuario(String id) {
+        return livroRepository.findAllByIdDonoLivro(id);
+    }
 
-	public Livro buscarPorId(String id) {
-		return livroRepository.findById(id).get();
-	}
+    public Livro buscarPorId(String id) {
+        return livroRepository.findById(id).get();
+    }
 
-	public void removerLivrosDoUsuarioComId(String id) {
-		livroRepository.deleteAllByIdDonoLivro(id);
-	}
+    public void removerLivrosDoUsuarioComId(String id) {
+        livroRepository.deleteAllByIdDonoLivro(id);
+    }
+
+    public Livro atualizar(Livro livro) {
+        categoriaService.adicionarTodasAsCategoriaNoLivro(livro, livro.getCategorias());
+        return livroRepository.save(livro);
+    }
 }
