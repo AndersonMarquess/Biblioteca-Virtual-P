@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -96,6 +98,19 @@ public class UsuarioService {
 		
 		for (Contato c : usuario.getContatos()) {
 			contatoService.removerPorId(c.getId());
+		}
+		invalidarUsuarioLogado(usuario);
+	}
+
+    /**
+     * Inválida o usuário que se remover.
+     * 
+     * @param usuario
+     */
+	private void invalidarUsuarioLogado(Usuario usuario) {
+		Authentication usuarioAutenticado = SecurityContextHolder.getContext().getAuthentication();
+		if(usuarioAutenticado.getName().equals(usuario.getEmail())) {
+			usuarioAutenticado.setAuthenticated(false);
 		}
 	}
 
