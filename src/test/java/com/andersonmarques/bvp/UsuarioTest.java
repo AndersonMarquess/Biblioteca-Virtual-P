@@ -51,19 +51,19 @@ public class UsuarioTest {
 	@Test
 	public void criarUsuarioEPegarInformacoes() {
 		assertEquals("Anderson", user.getNome());
-		assertEquals("123", user.getSenha());
+		assertTrue(BCrypt.checkpw("123", user.getSenha()));
 		assertEquals("email@contato.com", user.getEmail());
 	}
 
 	@Test
 	public void criarDoisUsuariosEPegarInformacoes() {
 		assertEquals("Anderson", user.getNome());
-		assertEquals("123", user.getSenha());
+		assertTrue(BCrypt.checkpw("123", user.getSenha()));
 		assertEquals("email@contato.com", user.getEmail());
 
 		Usuario user2 = new Usuario("Pedro", "321", "pedro@contato.com");
 		assertEquals("Pedro", user2.getNome());
-		assertEquals("321", user2.getSenha());
+		assertTrue(BCrypt.checkpw("321", user2.getSenha()));
 		assertEquals("pedro@contato.com", user2.getEmail());
 	}
 

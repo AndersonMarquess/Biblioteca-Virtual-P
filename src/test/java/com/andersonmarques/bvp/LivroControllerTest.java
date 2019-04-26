@@ -53,6 +53,7 @@ public class LivroControllerTest {
 	private Usuario getUsuarioAleatorio() {
 		Usuario usuario = new Usuario(getStringAleatoria(), getStringAleatoria(), getStringAleatoria());
 		usuario.adicionarContato(new Contato(getStringAleatoria(), Tipo.TWITTER));
+		usuario.setSenha("123");
 		return usuario;
 	}
 
@@ -68,18 +69,18 @@ public class LivroControllerTest {
 		};
 	}
 
-	private ResponseEntity<Livro> postLivro(Usuario usuario, Livro livro) {
-		return clienteTest.withBasicAuth(usuario.getEmail(), usuario.getSenha()).postForEntity("/v1/livro",
-				new HttpEntity<>(livro, headers), Livro.class);
+	private ResponseEntity<Livro> postLivro(String email, String senha, Livro livro) {
+		return clienteTest.withBasicAuth(email, senha).postForEntity("/v1/livro", new HttpEntity<>(livro, headers),
+				Livro.class);
 	}
 
 	private ResponseEntity<Usuario> postUsuario(Usuario usuario) {
 		return clienteTest.postForEntity("/v1/usuario", new HttpEntity<>(usuario, headers), Usuario.class);
 	}
 
-	private ResponseEntity<String> deletarUsuario(Usuario usuario) {
-		return clienteTest.withBasicAuth(usuario.getEmail(), usuario.getSenha())
-				.exchange("/v1/usuario/" + usuario.getId(), HttpMethod.DELETE, null, String.class);
+	private ResponseEntity<String> deletarUsuario(String email, String senha, Usuario usuario) {
+		return clienteTest.withBasicAuth(email, senha).exchange("/v1/usuario/" + usuario.getId(), HttpMethod.DELETE,
+				null, String.class);
 	}
 
 	private ResponseEntity<List<Livro>> buscarTodosOsLivros(String email, String senha) {
@@ -87,9 +88,9 @@ public class LivroControllerTest {
 				getTipoListaDeLivros());
 	}
 
-	private ResponseEntity<List<Livro>> listarTodosOsLivrosDoUsuario(Usuario usuario) {
-		return clienteTest.withBasicAuth(usuario.getEmail(), usuario.getSenha())
-				.exchange("/v1/livro/all/" + usuario.getId(), HttpMethod.GET, null, getTipoListaDeLivros());
+	private ResponseEntity<List<Livro>> listarTodosOsLivrosDoUsuario(String email, String senha, Usuario usuario) {
+		return clienteTest.withBasicAuth(email, senha).exchange("/v1/livro/all/" + usuario.getId(), HttpMethod.GET,
+				null, getTipoListaDeLivros());
 	}
 
 	@Test
@@ -112,11 +113,11 @@ public class LivroControllerTest {
 		assertEquals(200, usuarioPostResposta.getStatusCodeValue());
 
 		Livro livro = getLivroAleatorioComIdDono(usuario.getId());
-		ResponseEntity<Livro> livroPostResposta = postLivro(usuario, livro);
+		ResponseEntity<Livro> livroPostResposta = postLivro(usuario.getEmail(), "123", livro);
 		assertEquals(200, livroPostResposta.getStatusCodeValue());
 		assertNotNull(livroPostResposta.getBody());
 
-		ResponseEntity<String> respostaDELETE = deletarUsuario(usuario);
+		ResponseEntity<String> respostaDELETE = deletarUsuario(usuario.getEmail(), "123", usuario);
 		assertEquals(200, respostaDELETE.getStatusCodeValue());
 	}
 
@@ -128,16 +129,16 @@ public class LivroControllerTest {
 		assertEquals(200, usuarioPOST.getStatusCodeValue());
 
 		Livro livro = getLivroAleatorioComIdDono(usuario.getId());
-		ResponseEntity<Livro> livroPOST = postLivro(usuario, livro);
+		ResponseEntity<Livro> livroPOST = postLivro(usuario.getEmail(), "123",  livro);
 		assertEquals(200, livroPOST.getStatusCodeValue());
 
 		/* Listar livros do usuário */
-		ResponseEntity<List<Livro>> livrosUsuario = listarTodosOsLivrosDoUsuario(usuario);
+		ResponseEntity<List<Livro>> livrosUsuario = listarTodosOsLivrosDoUsuario(usuario.getEmail(), "123", usuario);
 		assertNotNull(livrosUsuario.getBody());
 		assertEquals(1, livrosUsuario.getBody().size());
 
 		/* Remover criações */
-		ResponseEntity<String> usuarioDELETE = deletarUsuario(usuario);
+		ResponseEntity<String> usuarioDELETE = deletarUsuario(usuario.getEmail(), "123", usuario);
 		assertEquals(200, usuarioDELETE.getStatusCodeValue());
 	}
 
@@ -149,7 +150,7 @@ public class LivroControllerTest {
 		assertEquals(200, usuarioPOST.getStatusCodeValue());
 
 		Livro livro = getLivroAleatorioComIdDono(usuario.getId());
-		ResponseEntity<Livro> livroPOST = postLivro(usuario, livro);
+		ResponseEntity<Livro> livroPOST = postLivro(usuario.getEmail(), "123", livro);
 		assertEquals(200, livroPOST.getStatusCodeValue());
 
 		/* Remover criações */
@@ -158,7 +159,7 @@ public class LivroControllerTest {
 
 		assertEquals(401, livroDELETE.getStatusCodeValue());
 
-		ResponseEntity<String> usuarioDELETE = deletarUsuario(usuario);
+		ResponseEntity<String> usuarioDELETE = deletarUsuario(usuario.getEmail(), "123", usuario);
 		assertEquals(200, usuarioDELETE.getStatusCodeValue());
 	}
 
@@ -170,16 +171,16 @@ public class LivroControllerTest {
 		assertEquals(200, usuarioPOST.getStatusCodeValue());
 
 		Livro livro = getLivroAleatorioComIdDono(usuario.getId());
-		ResponseEntity<Livro> livroPOST = postLivro(usuario, livro);
+		ResponseEntity<Livro> livroPOST = postLivro(usuario.getEmail(), "123", livro);
 		assertEquals(200, livroPOST.getStatusCodeValue());
 
 		/* Remover criações */
-		ResponseEntity<String> livroDELETE = clienteTest.withBasicAuth(usuario.getEmail(), usuario.getSenha())
+		ResponseEntity<String> livroDELETE = clienteTest.withBasicAuth(usuario.getEmail(), "123")
 				.exchange("/v1/livro/" + livroPOST.getBody().getId(), HttpMethod.DELETE, null, String.class);
 
 		assertEquals(200, livroDELETE.getStatusCodeValue());
 
-		ResponseEntity<String> usuarioDELETE = deletarUsuario(usuario);
+		ResponseEntity<String> usuarioDELETE = deletarUsuario(usuario.getEmail(), "123", usuario);
 		assertEquals(200, usuarioDELETE.getStatusCodeValue());
 	}
 
@@ -191,11 +192,11 @@ public class LivroControllerTest {
 		assertEquals(200, usuarioPOST.getStatusCodeValue());
 
 		Livro livro = getLivroAleatorioComIdDono(usuario.getId());
-		ResponseEntity<Livro> livroPOST = postLivro(usuario, livro);
+		ResponseEntity<Livro> livroPOST = postLivro(usuario.getEmail(), "123", livro);
 		assertEquals(200, livroPOST.getStatusCodeValue());
 
 		/* Remover criações */
-		ResponseEntity<String> usuarioDELETE = deletarUsuario(usuario);
+		ResponseEntity<String> usuarioDELETE = deletarUsuario(usuario.getEmail(), "123", usuario);
 		assertEquals(200, usuarioDELETE.getStatusCodeValue());
 
 		ResponseEntity<List<Livro>> respostaLivrosDoUsuario = clienteTest.withBasicAuth("admin@email.com", "password")
@@ -211,7 +212,7 @@ public class LivroControllerTest {
 		assertEquals(200, usuarioPOST.getStatusCodeValue());
 
 		Livro livro = getLivroAleatorioComIdDono(usuario.getId());
-		ResponseEntity<Livro> livroPOST = postLivro(usuario, livro);
+		ResponseEntity<Livro> livroPOST = postLivro(usuario.getEmail(), "123", livro);
 		assertEquals(200, livroPOST.getStatusCodeValue());
 
 		livro = livroPOST.getBody();
@@ -220,11 +221,11 @@ public class LivroControllerTest {
 		livro.getCategorias().get(0).setNome("de X para QUE");
 		livro.adicionarCategoria(new Categoria("Nova categoria pós atualização"));
 
-		ResponseEntity<Livro> livroPUT = clienteTest.withBasicAuth(usuario.getEmail(), usuario.getSenha())
+		ResponseEntity<Livro> livroPUT = clienteTest.withBasicAuth(usuario.getEmail(), "123")
 				.exchange("/v1/livro", HttpMethod.PUT, new HttpEntity<>(livro, headers), Livro.class);
 		assertEquals(200, livroPUT.getStatusCodeValue());
 
-		ResponseEntity<List<Livro>> respostaLivrosDoUsuario = listarTodosOsLivrosDoUsuario(usuario);
+		ResponseEntity<List<Livro>> respostaLivrosDoUsuario = listarTodosOsLivrosDoUsuario(usuario.getEmail(), "123", usuario);
 		assertNotNull(respostaLivrosDoUsuario.getBody());
 
 		Livro livroAposUpdate = respostaLivrosDoUsuario.getBody().get(0);
@@ -234,7 +235,7 @@ public class LivroControllerTest {
 		assertTrue(livroAposUpdate.getCategorias().stream()
 				.anyMatch(c -> c.getNome().equals("Nova categoria pós atualização")));
 
-		ResponseEntity<String> usuarioDELETE = deletarUsuario(usuario);
+		ResponseEntity<String> usuarioDELETE = deletarUsuario(usuario.getEmail(), "123", usuario);
 		assertEquals(200, usuarioDELETE.getStatusCodeValue());
 	}
 }

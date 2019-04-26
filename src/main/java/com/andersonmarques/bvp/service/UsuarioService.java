@@ -8,7 +8,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.andersonmarques.bvp.model.Contato;
@@ -79,7 +78,6 @@ public class UsuarioService {
 	@CacheEvict(cacheNames = { "usuarioBuscarTodos", "usuarioBuscarPorId", "usuarioBuscarPorEmail" }, allEntries = true)
 	public Usuario adicionar(Usuario usuario) {
 		verificarDisponibilidadeDeEmail(usuario);
-		criptografarSenha(usuario);
 		adicionarPermissaoPadrao(usuario);
 
 		Usuario userRecuperado = usuarioRepository.save(usuario);
@@ -91,10 +89,6 @@ public class UsuarioService {
 		permissaoService.adicionarTodasAsPermissoesNoUsuario(usuario, usuario.getPermissoes());
 
 		return userRecuperado;
-	}
-
-	private void criptografarSenha(Usuario usuario) {
-		usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
 	}
 
 	private void adicionarPermissaoPadrao(Usuario usuario) {
