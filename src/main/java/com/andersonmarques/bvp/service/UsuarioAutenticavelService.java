@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import com.andersonmarques.bvp.exception.NomeDeUsuarioNaoEncontradoException;
+import com.andersonmarques.bvp.exception.EmailDoUsuarioNaoEncontradoException;
 import com.andersonmarques.bvp.model.Permissao;
 import com.andersonmarques.bvp.model.Usuario;
 import com.andersonmarques.bvp.repository.PermissaoRepository;
@@ -36,7 +36,7 @@ public class UsuarioAutenticavelService implements UserDetailsService {
 		Optional<Usuario> usuario = usuarioRepository.findUsuarioByEmail(email);
 		
 		if(!usuario.isPresent()) {
-			throw new NomeDeUsuarioNaoEncontradoException(String.format("Usuário com e-mail [ %s ] não encontrado.", email));
+			throw new EmailDoUsuarioNaoEncontradoException(String.format("Usuário com e-mail [ %s ] não encontrado.", email));
 		}
 		
 		return montarUserDetails(usuario.get());
