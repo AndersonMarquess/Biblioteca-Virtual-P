@@ -2,8 +2,6 @@ package com.andersonmarques.bvp.resources;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.andersonmarques.bvp.exception.UsuarioSemAutorizacaoException;
 import com.andersonmarques.bvp.model.Livro;
 import com.andersonmarques.bvp.security.EndpointUtil;
 import com.andersonmarques.bvp.service.LivroService;
@@ -50,24 +49,20 @@ public class LivroController {
 	}
 
 	@DeleteMapping(path = V1_BASE_PATH + "/{id}", produces = { "application/json" })
-	public ResponseEntity<Mono<String>> removerPorId(@PathVariable("id") String id, HttpServletRequest request) {
+	public ResponseEntity<Mono<String>> removerPorId(@PathVariable("id") String id) {
 		Livro livro = livroService.buscarPorId(id);
-
 		if (!EndpointUtil.isUsuarioPermitido(livro.getIdDonoLivro(), usuarioService)) {
-			return EndpointUtil.getRespostaComStatusCode401(request);
+			throw new UsuarioSemAutorizacaoException("O usuário não tem autorização para buscar esta informação.");
 		}
-
 		livroService.removerPorId(id);
 		return ResponseEntity.ok(Mono.empty());
 	}
 
 	@PutMapping(path = V1_BASE_PATH, produces = { "application/json" })
-	public ResponseEntity<Mono<String>> atualizar(@RequestBody Livro livro, HttpServletRequest request) {
-		Livro livroRecuperado = livroService.buscarPorId(livro.getId());
-		if (!EndpointUtil.isUsuarioPermitido(livroRecuperado.getIdDonoLivro(), usuarioService)) {
-			return EndpointUtil.getRespostaComStatusCode401(request);
+	public ResponseEntity<Mono<String>> atualizar(@RequestBody Livro livro) {
+		if (!EndpointUtil.isUsuarioPermitido(livro.getIdDonoLivro(), usuarioService)) {
+			throw new UsuarioSemAutorizacaoException("O usuário não tem autorização para buscar esta informação.");
 		}
-
 		Livro livroAtualizado = livroService.atualizar(livro);
 		return ResponseEntity.ok(Mono.just(livroAtualizado.gerarJSON()));
 	}
