@@ -3,6 +3,9 @@ package com.andersonmarques.bvp.model;
 import java.util.Objects;
 import java.util.UUID;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,6 +19,8 @@ public class Contato {
 	private String id;
 	private Integer tipo;
 	@Indexed(unique = true)
+	@NotBlank(message = "O endereço de contato é obrigatório.")
+	@Size(min = 3, max = 80, message = "O endereço de contato deve conter entre {min} e {max} caracteres.")
 	private String endereco;
 
 	public Contato() {

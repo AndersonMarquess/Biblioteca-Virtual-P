@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -21,10 +27,16 @@ public class Usuario {
 
 	@Id
 	private String id;
+	@NotBlank(message = "O nome é obrigatório.")
 	private String nome;
+	@Size(min = 3, max = 80, message = "A senha deve conter entre {min} e {max} caracteres.")
+	@NotBlank(message = "A senha é obrigatória.")
 	private String senha;
+	@Email(message = "O campo de e-mail é obrigatório.")
 	private String email;
+	@Valid
 	@DBRef(lazy = false)
+	@NotEmpty(message = "Informe pelo menos um meio de contato.")
 	private List<Contato> contatos = new ArrayList<>();
 	@DBRef(lazy = true)
 	private Set<Permissao> permissoes = new HashSet<>();

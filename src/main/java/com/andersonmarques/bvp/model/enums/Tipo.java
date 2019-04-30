@@ -21,6 +21,7 @@ public enum Tipo {
 				}
 			}
 		}
-		throw new IllegalArgumentException("Tipo de contato [ " + id + " ] inválido.");
+		throw new IllegalArgumentException(
+				"Tipo de contato [ " + id + " ] inválido, use [ 1 ] para TWITTER ou [ 2 ] para FACEBOOK.");
 	}
 }

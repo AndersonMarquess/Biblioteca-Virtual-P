@@ -3,6 +3,8 @@ package com.andersonmarques.bvp.resources;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,7 +40,7 @@ public class UsuarioController {
 	}
 
 	@PostMapping(path = V1_BASE_PATH)
-	public Mono<Usuario> adicionar(@RequestBody Usuario usuario) {
+	public Mono<Usuario> adicionar(@Valid @RequestBody Usuario usuario) {
 		Usuario usuarioResposta = usuarioService.adicionar(usuario);
 		return Mono.just(usuarioResposta);
 	}
@@ -62,7 +64,7 @@ public class UsuarioController {
 	}
 
 	@PutMapping(path = V1_BASE_PATH, produces = { "application/json" })
-	public ResponseEntity<Mono<String>> atualizar(@RequestBody Usuario usuario) {
+	public ResponseEntity<Mono<String>> atualizar(@Valid @RequestBody Usuario usuario) {
 		if (!EndpointUtil.isUsuarioPermitido(usuario.getId(), usuarioService)) {
 			throw new UsuarioSemAutorizacaoException("O usuário não tem autorização para buscar esta informação.");
 		}
