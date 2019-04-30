@@ -1,6 +1,7 @@
 package com.andersonmarques.bvp.service;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,12 +15,21 @@ import com.andersonmarques.bvp.model.Permissao;
 import com.andersonmarques.bvp.model.Usuario;
 import com.andersonmarques.bvp.model.enums.Tipo;
 import com.andersonmarques.bvp.repository.CategoriaRepository;
+import com.andersonmarques.bvp.repository.ContatoRepository;
+import com.andersonmarques.bvp.repository.PermissaoRepository;
+import com.andersonmarques.bvp.repository.UsuarioRepository;
 
 @Component
 public class DBService implements CommandLineRunner {
 
 	@Autowired
 	private CategoriaRepository categoriaRepository;
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+	@Autowired
+	private PermissaoRepository permissaoRepository;
+	@Autowired
+	private ContatoRepository contatoRepository;
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
@@ -29,16 +39,13 @@ public class DBService implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		//popularBanco();
+		popularBanco();
+		criarAdminPadrao();
 	}
 
 	private void popularBanco() {
 		// Dropa o banco
 		mongoTemplate.getDb().drop();
-
-		Usuario pessoa1 = new Usuario("admin", "password", "admin@email.com");
-		pessoa1.adicionarContato(new Contato("admin_social@fb.com", Tipo.FACEBOOK));
-		pessoa1.adicionarPermissao(new Permissao("USER"), new Permissao("ADMIN"));
 
 		Usuario pessoa2 = new Usuario("necronomicon", "123", "necronomicon@email.com");
 		pessoa2.adicionarContato(new Contato("necrono@fb.com", Tipo.FACEBOOK));
@@ -46,13 +53,11 @@ public class DBService implements CommandLineRunner {
 
 		Usuario pessoa3 = new Usuario("faraday", "password", "faraday@email.com");
 		pessoa3.adicionarContato(new Contato("faraday@fb.com", Tipo.FACEBOOK));
-		pessoa3.adicionarPermissao(new Permissao("USER"), new Permissao("ADMIN"));
+		pessoa3.adicionarPermissao(new Permissao("USER"));
 
-		pessoa1 = usuarioService.adicionar(pessoa1);
 		pessoa2 = usuarioService.adicionar(pessoa2);
 		pessoa3 = usuarioService.adicionar(pessoa3);
 
-		Livro livro1 = new Livro("351-456-4571", "Dinastia M", "Descrição do livro", "urlCapaDoLivro", pessoa1.getId());
 		Livro livro2 = new Livro("421-351-571", "Y o último homem", "Descrição", "urlCapaDoLivro", pessoa2.getId());
 		Livro livro3 = new Livro("51-456-4571", "Demolidor", "Descrição do livro", "urlCapaDoLivro", pessoa3.getId());
 
@@ -60,13 +65,33 @@ public class DBService implements CommandLineRunner {
 		Categoria aventura = new Categoria("Aventura");
 		Categoria superHeroi = new Categoria("Super-herói");
 
-		livro1.adicionarCategoria(superHeroi);
 		livro2.adicionarCategoria(ficcao, aventura);
 		livro3.adicionarCategoria(superHeroi);
 
-		livroService.adicionar(livro1);
 		livroService.adicionar(livro2);
 		livroService.adicionar(livro3);
 		categoriaRepository.saveAll(Arrays.asList(ficcao, aventura, superHeroi));
+	}
+
+	private void criarAdminPadrao() {
+		if (!usuarioRepository.findUsuarioByEmail("admin@email.com").isPresent()) {
+			System.out.println("Criando administrador padrão.");
+			Usuario pessoa1 = new Usuario("admin", "password", "admin@email.com");
+			pessoa1.adicionarPermissao(new Permissao("ADMIN"));
+
+			Optional<Permissao> roleAdmin = permissaoRepository.findByNomePermissao("ROLE_ADMIN");
+
+			if (!roleAdmin.isPresent()) {
+				Permissao permissao = pessoa1.getPermissoes().stream().findFirst().get();
+				permissao.adicionarUsuario(pessoa1);
+				permissaoRepository.save(permissao);
+			} else {
+				roleAdmin.get().adicionarUsuario(pessoa1);
+				permissaoRepository.save(roleAdmin.get());
+			}
+
+			usuarioRepository.save(pessoa1);
+			contatoRepository.saveAll(pessoa1.getContatos());
+		}
 	}
 }

@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.andersonmarques.bvp.exception.UsuarioSemAutorizacaoException;
 import com.andersonmarques.bvp.model.Contato;
 import com.andersonmarques.bvp.model.Permissao;
 import com.andersonmarques.bvp.model.Usuario;
@@ -92,9 +93,37 @@ public class UsuarioService {
 	}
 
 	private void adicionarPermissaoPadrao(Usuario usuario) {
+		usuario.getPermissoes().stream().forEach(this::verificarPermissaoDeAdmin);
 		if (usuario.getPermissoes().stream().noneMatch(p -> p.getNomePermissao().equals("ROLE_USER"))) {
 			usuario.adicionarPermissao(new Permissao("USER"));
 			System.out.println(String.format("Adicionado permissão padrão no usuário: [ %s ] ", usuario.getNome()));
+		}
+	}
+
+	/**
+	 * Apenas um administrador pode criar um usuário com ROLE_ADMIN.
+	 * 
+	 * Se a permissão que será adicionada for de administrador, verifica se é outro
+	 * adiministrador que está criando o usuário.
+	 * 
+	 * @param permissao
+	 */
+	private void verificarPermissaoDeAdmin(Permissao permissao) {
+		if (permissao.getNomePermissao().equalsIgnoreCase("ROLE_ADMIN")) {
+			Authentication usuarioAutenticado = SecurityContextHolder.getContext().getAuthentication();
+
+			if (usuarioAutenticado == null) {
+				throw new UsuarioSemAutorizacaoException(
+						"Você não tem autorização para adicionar a permissão de admin.");
+			}
+
+			Optional<Usuario> usuarioLogado = usuarioRepository.findUsuarioByEmail(usuarioAutenticado.getName());
+
+			if (!usuarioLogado.isPresent() || usuarioLogado.get().getPermissoes().stream()
+					.noneMatch(p -> p.getNomePermissao().equals("ROLE_ADMIN"))) {
+				throw new UsuarioSemAutorizacaoException(
+						"Você não tem autorização para adicionar a permissão de admin.");
+			}
 		}
 	}
 

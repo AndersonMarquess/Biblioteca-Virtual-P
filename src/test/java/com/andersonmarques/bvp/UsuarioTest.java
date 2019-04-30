@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.andersonmarques.bvp.exception.UsuarioSemAutorizacaoException;
 import com.andersonmarques.bvp.model.Contato;
 import com.andersonmarques.bvp.model.Permissao;
 import com.andersonmarques.bvp.model.Usuario;
@@ -141,35 +142,33 @@ public class UsuarioTest {
 		usuarioService.removerPorId(usuarioRecuperado.getId());
 	}
 
+	@Test(expected = UsuarioSemAutorizacaoException.class)
+	public void gravarUsuarioComRoleAdminRecebeExcecao() {
+		Usuario admin = new Usuario("Gabriel", "231", "gabriel@contato.com");
+		admin.adicionarPermissao(new Permissao("ADMIN"), new Permissao("ROLE_USER"));
+		usuarioService.adicionar(admin);
+	}
+
 	@Test
 	public void gravarERecuperarPermissoesDosUsuariosNoBanco() {
 		Usuario user = new Usuario("Pedro", "321", "pedro@contato.com");
-		Usuario admin = new Usuario("Gabriel", "231", "gabriel@contato.com");
-		Usuario adminMaster = new Usuario("Vanessa", "333", "vanessa@contato.com");
+		Usuario userMaster = new Usuario("Vanessa", "333", "vanessa@contato.com");
 		user.adicionarPermissao(new Permissao("ROLE_USER"));
-		admin.adicionarPermissao(new Permissao("ADMIN"), new Permissao("ROLE_USER"));
-		adminMaster.adicionarPermissao(new Permissao("ADMIN"), new Permissao("ROLE_USER"), new Permissao("MASTER"));
+		userMaster.adicionarPermissao(new Permissao("ROLE_USER"), new Permissao("MASTER"));
 
 		Usuario userRecuperado = usuarioService.adicionar(user);
-		Usuario adminRecuperado = usuarioService.adicionar(admin);
-		Usuario adminMasterRecuperado = usuarioService.adicionar(adminMaster);
+		Usuario adminMasterRecuperado = usuarioService.adicionar(userMaster);
 
-		Set<Permissao> userPermissoesRecuperada = permissaoService
-				.buscarPermissoesPorIdUsuario(userRecuperado.getId());
+		Set<Permissao> userPermissoesRecuperada = permissaoService.buscarPermissoesPorIdUsuario(userRecuperado.getId());
 		assertTrue(userPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
-
-		Set<Permissao> adminPermissoesRecuperada = permissaoService
-				.buscarPermissoesPorIdUsuario(adminRecuperado.getId());
-		assertTrue(adminPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
-		assertTrue(adminPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_ADMIN")));
 
 		Set<Permissao> adminMasterPermissoesRecuperada = permissaoService
 				.buscarPermissoesPorIdUsuario(adminMasterRecuperado.getId());
 		assertTrue(adminMasterPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
-		assertTrue(adminMasterPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_ADMIN")));
 		assertTrue(adminMasterPermissoesRecuperada.stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_MASTER")));
 
-		usuarioService.removerPorId(userRecuperado.getId());
+		usuarioService.removerPorId(user.getId());
+		usuarioService.removerPorId(userMaster.getId());
 	}
 
 	@Test
@@ -197,15 +196,15 @@ public class UsuarioTest {
 		Usuario usuarioRecuperado = usuarioService.adicionar(usuario);
 		assertTrue(usuarioRecuperado.getPermissoes().stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
 	}
-	
+
 	@Test
 	public void verificarSenhaDoUsuario() {
 		String criptografado = BCrypt.hashpw("123", BCrypt.gensalt(5));
 		String encodada = new BCryptPasswordEncoder().encode("123");
-		
-		System.out.println("Senha criptografada: "+criptografado);
-		System.out.println("Senha encodada: "+encodada);
-		
+
+		System.out.println("Senha criptografada: " + criptografado);
+		System.out.println("Senha encodada: " + encodada);
+
 		assertTrue(new BCryptPasswordEncoder().matches("123", criptografado));
 		assertTrue(new BCryptPasswordEncoder().matches("123", encodada));
 		assertTrue(BCrypt.checkpw("123", criptografado));
