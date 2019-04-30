@@ -45,9 +45,8 @@ public class LivroService {
 	@CacheEvict(cacheNames = { "livroBuscarPorTitulo", "livroBuscarTodos", "livroBuscarTodosPorIdUsuario",
 			"livroBuscarPorId" }, allEntries = true)
 	public Livro adicionar(Livro livro) {
-		Livro livroRecuperado = livroRepository.save(livro);
 		categoriaService.adicionarTodasAsCategoriaNoLivro(livro, livro.getCategorias());
-		return livroRecuperado;
+		return livroRepository.save(livro);
 	}
 
 	@CacheEvict(cacheNames = { "livroBuscarPorTitulo", "livroBuscarTodos", "livroBuscarTodosPorIdUsuario",

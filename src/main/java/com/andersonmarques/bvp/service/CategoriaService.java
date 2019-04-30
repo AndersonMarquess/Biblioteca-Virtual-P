@@ -29,15 +29,20 @@ public class CategoriaService {
 			Optional<Categoria> categoriaResult = categoriaRepository.findByNome(c.getNome());
 
 			if (categoriaResult.isPresent()) {
-				System.out.println("[ Categoria ] " + categoriaResult.get().getNome());
-				categoriaResult.get().adicionarLivro(livro);
-				livro.getCategorias().set(livro.getCategorias().indexOf(c), categoriaResult.get());
-				adicionarCategoria(categoriaResult.get());
+				adicionarLivroNaCategoriaExistente(livro, c, categoriaResult.get());
 			} else {
 				c.adicionarLivro(livro);
 				adicionarCategoria(c);
 			}
 		}
+	}
+
+	private void adicionarLivroNaCategoriaExistente(Livro livro, Categoria categoriaAntiga,
+			Categoria categoriaRecuperada) {
+		System.out.println("[ Categoria ] " + categoriaRecuperada.getNome());
+		categoriaRecuperada.adicionarLivro(livro);
+		livro.getCategorias().set(livro.getCategorias().indexOf(categoriaAntiga), categoriaRecuperada);
+		adicionarCategoria(categoriaRecuperada);
 	}
 
 	@CacheEvict(cacheNames = { "categoriaBuscarTodasPorIdLivro" }, allEntries = true)
