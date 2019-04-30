@@ -51,7 +51,7 @@ public class LivroControllerTest {
 	}
 
 	private Usuario getUsuarioAleatorio() {
-		Usuario usuario = new Usuario(getStringAleatoria(), getStringAleatoria(), getStringAleatoria());
+		Usuario usuario = new Usuario(getStringAleatoria(), getStringAleatoria(), getStringAleatoria()+"@email.com");
 		usuario.adicionarContato(new Contato(getStringAleatoria(), Tipo.TWITTER));
 		usuario.setSenha("123");
 		return usuario;

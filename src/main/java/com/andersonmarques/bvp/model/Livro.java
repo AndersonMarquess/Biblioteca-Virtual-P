@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,11 +22,16 @@ public class Livro {
 	@Id
 	private String id;
 	private String isbn;
+	@NotEmpty(message = "O campo de título é obrigatório.")
+	@Size(min = 5, max = 150, message = "O título deve conter entre {min} e {max} caracteres.")
 	private String titulo;
 	private String descricao;
-    private String urlCapa;
-    @DBRef(lazy = false)
+	@Size(max = 250, message = "A url da capa do livro não pode possuir mais que {max} caracteres.")
+	private String urlCapa;
+	@DBRef(lazy = false)
 	private List<Categoria> categorias = new ArrayList<>();
+	@NotEmpty(message = "O id do dono do livro é obrigatório.")
+	@Size(min = 36, max = 36, message = "O id do dono do livro deve conter {min} caracteres.")
 	private String idDonoLivro;
 
 	public Livro() {
@@ -108,8 +116,10 @@ public class Livro {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 		Livro livro = (Livro) o;
 		return id.equals(livro.id);
 	}

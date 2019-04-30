@@ -2,6 +2,8 @@ package com.andersonmarques.bvp.resources;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +39,7 @@ public class LivroController {
 	}
 
 	@PostMapping(path = V1_BASE_PATH, produces = { "application/json" })
-	public ResponseEntity<Mono<Livro>> adicionar(@RequestBody Livro livro) {
+	public ResponseEntity<Mono<Livro>> adicionar(@Valid @RequestBody Livro livro) {
 		Livro livroResposta = livroService.adicionar(livro);
 		return ResponseEntity.ok(Mono.just(livroResposta));
 	}
@@ -59,7 +61,7 @@ public class LivroController {
 	}
 
 	@PutMapping(path = V1_BASE_PATH, produces = { "application/json" })
-	public ResponseEntity<Mono<String>> atualizar(@RequestBody Livro livro) {
+	public ResponseEntity<Mono<String>> atualizar(@Valid @RequestBody Livro livro) {
 		if (!EndpointUtil.isUsuarioPermitido(livro.getIdDonoLivro(), usuarioService)) {
 			throw new UsuarioSemAutorizacaoException("O usuário não tem autorização para buscar esta informação.");
 		}
