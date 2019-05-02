@@ -31,6 +31,6 @@
 
 ### outros ###
 /out/
-*/.vscode/
+/.vscode/
 /UML/
 todo.txt
