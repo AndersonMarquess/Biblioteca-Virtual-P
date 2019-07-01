@@ -42,6 +42,14 @@ public class TratadorException {
 		return ResponseEntity.status(erro.getStatus()).body(erro);
 	}
 
+	@ExceptionHandler(value = LoginInvalidoException.class)
+	public ResponseEntity<ApiErro> loginInvalidoException(LoginInvalidoException exception,
+			HttpServletRequest request) {
+
+		ApiErro erro = new ApiErro(HttpStatus.BAD_REQUEST, exception.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(erro.getStatus()).body(erro);
+	}
+
 	@ExceptionHandler(value = EmailDoUsuarioNaoEncontradoException.class)
 	public ResponseEntity<ApiErro> emailDoUsuarioNaoEncontrado(EmailDoUsuarioNaoEncontradoException exception,
 			HttpServletRequest request) {

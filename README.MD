@@ -6,6 +6,7 @@ Objetivo - Colocar em prática o uso do TDD e do desenvolvimento de uma API REST
 >    - Spring boot
 >    - Spring data JPA
 >    - Spring security
+>- JWT
 >- Bean validation
 >- MongoDB
 >- Junit
@@ -16,8 +17,7 @@ Objetivo - Colocar em prática o uso do TDD e do desenvolvimento de uma API REST
 
 MÉTODO | ENDPOINT  | DESCRIÇÃO
 ---    | ---       | ---
-GET    | /login    | Login usuário
-GET    | /logout   | Logout usuário
+POST   | /login    | Login usuário
 
 ## Usuário
 
