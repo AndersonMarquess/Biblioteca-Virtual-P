@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoginService } from './login.service';
 
 @Component({
 	selector: 'bvp-login',
@@ -9,8 +10,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class LoginComponent implements OnInit {
 
 	formularioDeLogin: FormGroup;
+	erroLogin = false;
 
-	constructor(private formBuilder: FormBuilder) { }
+	constructor(private formBuilder: FormBuilder, private loginService: LoginService) { }
 
 	ngOnInit(): void {
 		this.formularioDeLogin = this.formBuilder.group({
@@ -23,7 +25,14 @@ export class LoginComponent implements OnInit {
 		const email = this.formularioDeLogin.get("email").value;
 		const senha = this.formularioDeLogin.get("senha").value;
 
-		console.log(email);
-		console.log(senha);
+		this.loginService.autenticar(email, senha)
+			.subscribe(
+				suc => console.log("Autenticado com sucesso!"),
+				err => {
+					console.log(err.message);
+					this.erroLogin = true;
+					this.formularioDeLogin.reset();
+				}
+			);
 	}
 }

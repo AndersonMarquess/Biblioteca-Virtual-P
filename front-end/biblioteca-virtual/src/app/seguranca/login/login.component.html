@@ -4,6 +4,10 @@
 		<h2 class="text-center">Login</h2>
 	</header>
 
+	<div *ngIf="erroLogin" class="alert alert-danger mt-4 erro-alert" role="alert">
+		Verifique os dados e tente novamente.
+	</div>
+
 	<form [formGroup]="formularioDeLogin" class="form" (submit)="login()">
 
 		<div class="form-group">
