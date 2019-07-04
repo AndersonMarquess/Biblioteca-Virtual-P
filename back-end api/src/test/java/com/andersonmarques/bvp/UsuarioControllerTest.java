@@ -56,8 +56,8 @@ public class UsuarioControllerTest {
 
 	private String getTokenParaCredenciais(CredenciaisLogin credenciaisLogin) {
 		ResponseEntity<String> postForEntity = clienteTeste.postForEntity("/login", credenciaisLogin, String.class);
-		String token = postForEntity.getHeaders().get("Bearer").get(0);
-		return "Bearer " + token;
+		String token = postForEntity.getHeaders().get(AUTHORIZATION).get(0);
+		return token;
 	}
 
 	private Usuario getUsuarioAleatorio() {

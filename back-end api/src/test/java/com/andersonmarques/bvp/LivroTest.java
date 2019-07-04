@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.andersonmarques.bvp.exception.CategoriaDuplicadaException;
@@ -18,6 +19,7 @@ import com.andersonmarques.bvp.model.Livro;
 import com.andersonmarques.bvp.service.CategoriaService;
 import com.andersonmarques.bvp.service.LivroService;
 
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class LivroTest {

@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.andersonmarques.bvp.exception.UsuarioSemAutorizacaoException;
@@ -25,6 +26,7 @@ import com.andersonmarques.bvp.service.PermissaoService;
 import com.andersonmarques.bvp.service.UsuarioAutenticavelService;
 import com.andersonmarques.bvp.service.UsuarioService;
 
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UsuarioTest {

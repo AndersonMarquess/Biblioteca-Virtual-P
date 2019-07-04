@@ -3,11 +3,6 @@ package com.andersonmarques.bvp.service;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.stereotype.Component;
-
 import com.andersonmarques.bvp.model.Categoria;
 import com.andersonmarques.bvp.model.Contato;
 import com.andersonmarques.bvp.model.Livro;
@@ -19,9 +14,21 @@ import com.andersonmarques.bvp.repository.ContatoRepository;
 import com.andersonmarques.bvp.repository.PermissaoRepository;
 import com.andersonmarques.bvp.repository.UsuarioRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.stereotype.Component;
+
 @Component
 public class DBService implements CommandLineRunner {
 
+	private Logger logger = LoggerFactory.getLogger(DBService.class);
+
+	@Value("${spring.profiles.active}")
+	private String nomeProfile;
 	@Autowired
 	private CategoriaRepository categoriaRepository;
 	@Autowired
@@ -39,13 +46,22 @@ public class DBService implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		popularBanco();
+		if (nomeProfile != null && nomeProfile.equals("test")) {
+			logger.info("Perfil de teste ativado.");
+			popularBanco();
+		} else {
+			logger.info("Perfil ativo: {}", nomeProfile);
+		}
+
 		criarAdminPadrao();
 	}
 
 	private void popularBanco() {
+		logger.info("Apagando o banco de dados.");
 		// Dropa o banco
 		mongoTemplate.getDb().drop();
+
+		logger.info("Inserindo dados mock.");
 
 		Usuario pessoa2 = new Usuario("necronomicon", "123", "necronomicon@email.com");
 		pessoa2.adicionarContato(new Contato("necrono@fb.com", Tipo.FACEBOOK));
@@ -75,7 +91,8 @@ public class DBService implements CommandLineRunner {
 
 	private void criarAdminPadrao() {
 		if (!usuarioRepository.findUsuarioByEmail("admin@email.com").isPresent()) {
-			System.out.println("Criando administrador padrão.");
+			logger.info("Criando administrador padrão.");
+
 			Usuario pessoa1 = new Usuario("admin", "password", "admin@email.com");
 			pessoa1.adicionarPermissao(new Permissao("ADMIN"));
 
@@ -92,6 +109,8 @@ public class DBService implements CommandLineRunner {
 
 			usuarioRepository.save(pessoa1);
 			contatoRepository.saveAll(pessoa1.getContatos());
+		} else {
+			logger.info("Administrador padrão encontrado.");
 		}
 	}
 }

@@ -29,11 +29,14 @@ public class LoginController {
 	@PostMapping("/login")
 	public ResponseEntity<CredenciaisLogin> login(@RequestBody @Valid CredenciaisLogin credenciaisLogin,
 			HttpServletResponse resp) {
-		UsernamePasswordAuthenticationToken dadosLogin = credenciaisLogin.getToken();
-
 		try {
+			UsernamePasswordAuthenticationToken dadosLogin = credenciaisLogin.getToken();
 			Authentication authentication = authenticationManager.authenticate(dadosLogin);
-			resp.addHeader("Bearer", jwtTokenService.gerarToken(authentication));
+
+			String token = "Bearer " + jwtTokenService.gerarToken(authentication);
+			resp.addHeader("Authorization", token);
+			resp.addHeader("Access-Control-Expose-Headers", "Authorization");
+
 			return ResponseEntity.ok().build();
 		} catch (Exception exception) {
 			// Se os dados de login estiverem errados retorna bad request.
