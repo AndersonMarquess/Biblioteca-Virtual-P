@@ -6,19 +6,23 @@ import { CadastroComponent } from './cadastro/cadastro.component';
 import { CadastroService } from './cadastro/cadastro.service';
 import { LoginComponent } from './login/login.component';
 import { LoginService } from './login/login.service';
+import { SegurancaComponent } from './seguranca.component';
+import { SegurancaRoutingModule } from './seguranca.routing.module';
 import { RequestInterceptor } from './token/request.interceptor';
 
 
 @NgModule({
 	declarations: [
 		LoginComponent,
-		CadastroComponent
+		CadastroComponent,
+		SegurancaComponent
 	],
 	imports: [
 		CommonModule,
 		// Usado para validar os inputs
 		ReactiveFormsModule,
-		HttpClientModule
+		HttpClientModule,
+		SegurancaRoutingModule
 	],
 	providers: [
 		{
@@ -32,9 +36,5 @@ import { RequestInterceptor } from './token/request.interceptor';
 		LoginService,
 		CadastroService
 	],
-	exports: [
-		LoginComponent,
-		CadastroComponent
-	]
 })
 export class SegurancaModule { }
