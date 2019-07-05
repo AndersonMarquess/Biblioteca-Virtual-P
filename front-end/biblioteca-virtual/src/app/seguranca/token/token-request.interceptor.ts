@@ -6,8 +6,8 @@ import { TokenService } from './token.service';
 /*
  * Intercepta cada request e adicionar o token. (funciona igual um filter).
  */
-@Injectable({ providedIn: "root" })
-export class RequestInterceptor implements HttpInterceptor {
+@Injectable()
+export class TokenRequestInterceptor implements HttpInterceptor {
 
 	constructor(private tokenService: TokenService) { }
 
