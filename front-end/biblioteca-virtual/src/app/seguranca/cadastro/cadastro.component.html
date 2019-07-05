@@ -1,0 +1,69 @@
+<div class="container mt-4">
+
+	<header>
+		<h2 class="text-center">Criar conta</h2>
+	</header>
+
+	<div *ngIf="erroCadastro" class="alert alert-danger mt-4" role="alert">
+		E-mail ou contato inválido
+	</div>
+
+	<form [formGroup]="formCadastro" (submit)="cadastrar()">
+
+		<div class="form-group">
+			<label for="nome" class="col-sm col-form-label">Nome</label>
+			<div class="col-sm">
+				<input id="nome" formControlName="nome" type="text" placeholder="Maria José" class="form-control">
+				<small *ngIf="formCadastro.get('nome').errors?.required" class="text-danger">Este campo é
+					obrigatório</small>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="email" class="col-sm col-form-label">E-mail</label>
+			<div class="col-sm">
+				<input id="email" formControlName="email" type="text" placeholder="E-mail usado no login"
+					class="form-control">
+				<small *ngIf="formCadastro.get('email').errors?.required" class="text-danger">Este campo é
+					obrigatório</small>
+				<small *ngIf="formCadastro.get('email').errors?.email" class="text-danger">Formato inválido</small>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="senha" class="col-sm col-form-label">Senha</label>
+			<div class="col-sm">
+				<input id="senha" formControlName="senha" type="password" placeholder="Senha" class="form-control">
+				<small *ngIf="formCadastro.get('senha').errors?.required" class="text-danger">Este campo é
+					obrigatório</small>
+				<small
+					*ngIf="formCadastro.get('senha').errors?.minlength || formCadastro.get('senha').errors?.maxlength"
+					class="text-danger">A senha deve conter entre 3 e 80 caracteres</small>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="row col-sm no-gutters">
+				<div class="col-sm">
+					<label for="contatos" class="">Contato</label>
+					<input id="contatos" formControlName="endereco" type="text" placeholder="Twitter ou Facebook"
+						class="form-control">
+					<small *ngIf="formCadastro.get('endereco').errors?.required" class="text-danger">Este campo é
+						obrigatório</small>
+				</div>
+
+				<div class="col-sm-4 ml-1">
+					<label for="tipo">Tipo</label>
+					<select id="tipo" class="custom-select" formControlName="tipo">
+						<option value="1">Twitter</option>
+						<option value="2">Facebook</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-2">
+			<button [disabled]="formCadastro.invalid" class="btn btn-primary">Entrar</button>
+		</div>
+	</form>
+</div>
