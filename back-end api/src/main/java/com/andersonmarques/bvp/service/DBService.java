@@ -65,6 +65,7 @@ public class DBService implements CommandLineRunner {
 
 		Usuario pessoa2 = new Usuario("necronomicon", "123", "necronomicon@email.com");
 		pessoa2.adicionarContato(new Contato("necrono@fb.com", Tipo.FACEBOOK));
+		pessoa2.adicionarContato(new Contato("@tw_necronomicon", Tipo.TWITTER));
 		pessoa2.adicionarPermissao(new Permissao("USER"), new Permissao("MASTER"));
 
 		Usuario pessoa3 = new Usuario("faraday", "password", "faraday@email.com");

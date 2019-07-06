@@ -109,6 +109,11 @@ public class UsuarioControllerTest {
 		return usuario;
 	}
 
+	private void deletarUsuarioEConfirmar(Usuario usuario) {
+		ResponseEntity<String> respostaDELETE = deletarUsuario(usuario);
+		assertEquals(200, respostaDELETE.getStatusCodeValue());
+	}
+
 	@Test
 	public void autenticacaoSemRoleAdminParaListarUsuariosRecebe_StatusCode403() {
 		headers.set(AUTHORIZATION, getTokenParaCredenciais(new CredenciaisLogin(USUARIO_EMAIL, USUARIO_PASSWORD)));
@@ -139,8 +144,7 @@ public class UsuarioControllerTest {
 		assertEquals(200, resposta.getStatusCodeValue());
 
 		/* Remover usuário */
-		ResponseEntity<String> respostaDELETE = deletarUsuario(usuario);
-		assertEquals(200, respostaDELETE.getStatusCodeValue());
+		deletarUsuarioEConfirmar(usuario);
 	}
 
 	@Test
@@ -158,12 +162,10 @@ public class UsuarioControllerTest {
 
 		/* Remover usuários */
 		setTokenHeaderParaUsuario(usuario);
-		ResponseEntity<String> respostaDELETE = deletarUsuario(usuario);
-		assertEquals(200, respostaDELETE.getStatusCodeValue());
+		deletarUsuarioEConfirmar(usuario);
 
 		setTokenHeaderParaUsuario(usuario2);
-		ResponseEntity<String> resposta2DELETE = deletarUsuario(usuario2);
-		assertEquals(200, resposta2DELETE.getStatusCodeValue());
+		deletarUsuarioEConfirmar(usuario2);
 	}
 
 	@Test
@@ -180,8 +182,7 @@ public class UsuarioControllerTest {
 		assertTrue(resposta.getBody().getPermissoes().stream().anyMatch(p -> p.getNomePermissao().equals("ROLE_USER")));
 
 		/* Remover */
-		ResponseEntity<String> respostaDELETE = deletarUsuario(usuario);
-		assertEquals(200, respostaDELETE.getStatusCodeValue());
+		deletarUsuarioEConfirmar(usuario);
 	}
 
 	@Test
@@ -189,8 +190,7 @@ public class UsuarioControllerTest {
 		Usuario usuario = postUsuarioAleatorio();
 
 		setTokenHeaderParaUsuario(usuario);
-		ResponseEntity<String> respostaDELETE = deletarUsuario(usuario);
-		assertEquals(200, respostaDELETE.getStatusCodeValue());
+		deletarUsuarioEConfirmar(usuario);
 	}
 
 	@Test
@@ -218,8 +218,7 @@ public class UsuarioControllerTest {
 
 		/* Remover */
 		setTokenHeaderParaUsuario(respostaPUT.getBody());
-		ResponseEntity<String> respostaDELETE = deletarUsuario(respostaPUT.getBody());
-		assertEquals(200, respostaDELETE.getStatusCodeValue());
+		deletarUsuarioEConfirmar(respostaPUT.getBody());
 	}
 
 	@Test
@@ -241,7 +240,33 @@ public class UsuarioControllerTest {
 		assertTrue(BCrypt.checkpw("abc", respostaPUT.getBody().getSenha()));
 
 		/* Remover */
-		ResponseEntity<String> respostaDELETE = deletarUsuario(respostaPUT.getBody());
-		assertEquals(200, respostaDELETE.getStatusCodeValue());
+		deletarUsuarioEConfirmar(respostaPUT.getBody());
+	}
+
+	@Test
+	public void buscarContatosDoQualquerUsuarioQuandoAutenticado() {
+		Usuario usuario = postUsuarioAleatorio();
+		setTokenHeaderParaUsuario(usuario);
+		Contato contato = new Contato("@tw_user_teste", Tipo.TWITTER);
+		usuario.adicionarContato(contato);
+
+		ResponseEntity<Usuario> respostaPUT = atualizarUsuario(usuario);
+		assertEquals(200, respostaPUT.getStatusCodeValue());
+
+		Usuario usuario2 = postUsuarioAleatorio();
+		setTokenHeaderParaUsuario(usuario2);
+
+		String endereco = "/v1/usuario/contatos/" + respostaPUT.getBody().getId();
+		ResponseEntity<String> listaResposta = clienteTeste.exchange(endereco, HttpMethod.GET,
+				new HttpEntity<>(headers), String.class);
+
+		assertNotNull(listaResposta);
+		assertTrue(listaResposta.getBody().contains(contato.getEndereco()));
+
+		setTokenHeaderParaUsuario(respostaPUT.getBody());
+		deletarUsuarioEConfirmar(respostaPUT.getBody());
+		
+		setTokenHeaderParaUsuario(usuario2);
+		deletarUsuarioEConfirmar(usuario2);
 	}
 }
