@@ -5,13 +5,22 @@ const rotas: Routes = [
 	{
 		path: '',
 		pathMatch: 'full',
-		redirectTo: 'bvp'
+		redirectTo: ''
 	},
 	{
-		// As rotas filhas ficaram após o path ex. { /bvp/cadastrar ou /bvp/login }
-		path: 'bvp',
-		// Componente ou módulo que será carregado na rota filha.
+		path: '',
+		// Módulo que será carregado na rota filha.
 		loadChildren: './seguranca/seguranca.module#SegurancaModule'
+	},
+	{
+		path: '',
+		pathMatch: 'full',
+		redirectTo: 'livros'
+	},
+	{
+		// As rotas filhas são chamadas após o path ex. { /livros/all ou /livros/add }
+		path: 'livros',
+		loadChildren: './livros/livros.module#LivrosModule'
 	}
 ];
 
