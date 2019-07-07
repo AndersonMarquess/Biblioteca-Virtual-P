@@ -1,1 +1,32 @@
-<h2 class="text-center">Lista de livros</h2>
+<main>
+	<header>
+		<h2 class="text-center">Lista de livros</h2>
+	</header>
+
+	<div class="d-flex flex-row justify-content-center flex-wrap">
+
+		<div *ngFor="let livro of todosOsLivros" class="card text-center m-4" style="width: 18rem">
+			<img class="card-img-top"
+				src="https://img.freepik.com/vetores-gratis/livros-stack-realistic_1284-4735.jpg?size=338&ext=jpg"
+				alt="Imagem de capa do livro">
+
+			<div class="card-body">
+				<h5 class="card-title">{{livro.getTitulo() | uppercase}}</h5>
+				<p class="card-text col-2 text-truncate" style="max-width: 16rem">
+					{{livro.getDescricao()}}</p>
+			</div>
+
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item">{{livro.getIsbn()}}</li>
+				<li class="list-group-item" *ngFor="let contato of livro.contatos">
+					<span class="text-bold"> {{ contato.tipoLiteral }} </span>
+					<a class="card-link" [routerLink]="['']">{{ contato.endereco }}</a>
+				</li>
+			</ul>
+
+			<div class="card-footer">
+				<p class="text-muted" *ngFor="let cat of livro.getCategorias()">{{cat.nome}}</p>
+			</div>
+		</div>
+	</div>
+</main>

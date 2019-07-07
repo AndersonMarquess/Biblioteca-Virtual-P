@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Contato } from 'src/app/compartilhados/models/contato';
+import { Livro } from 'src/app/compartilhados/models/livro';
+import { LivroComContato } from 'src/app/compartilhados/models/livro-com-contato';
 import { LivrosService } from '../livros.service';
+import { UsuariosService } from 'src/app/usuarios/usuarios.service';
 
 @Component({
 	selector: 'bvp-listar-livros',
@@ -7,16 +11,27 @@ import { LivrosService } from '../livros.service';
 })
 export class ListarLivrosComponent implements OnInit {
 
-	constructor(private livrosService: LivrosService) { }
+	todosOsLivros: Array<LivroComContato> = [];
+
+	constructor(private livrosService: LivrosService, private usuarioService: UsuariosService) { }
 
 	ngOnInit(): void {
-		console.log("Tentando buscar todos os livros");
-		
 		this.livrosService
 			.buscarTodosOsLivros()
 			.subscribe(
-				suc => console.log(suc),
+				suc => {
+					suc.forEach(livro => this.transformarEmLivroComContato(livro));
+				},
 				err => console.log(err)
 			);
+	}
+
+	private transformarEmLivroComContato(livro: Livro): void {
+		this.usuarioService
+			.buscarContatoDoUsuario(livro.idDonoLivro)
+			.subscribe((suc: Contato[]) => {
+				const contatos = suc;
+				this.todosOsLivros.push(new LivroComContato(livro, contatos));
+			});
 	}
 }

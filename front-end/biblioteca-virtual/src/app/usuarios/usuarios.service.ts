@@ -5,12 +5,12 @@ import { Observable } from 'rxjs';
 const API_URL = "http://localhost:8080";
 
 @Injectable()
-export class LivrosService {
-	
+export class UsuariosService {
+
 	constructor(private httpClient: HttpClient) { }
 
-	buscarTodosOsLivros(): Observable<any> {
-		const endereco = API_URL + "/v1/livro/all";
+	buscarContatoDoUsuario(idUsuario: string): Observable<any> {
+		const endereco = API_URL + "/v1/usuario/contatos/" + idUsuario;
 		return this.httpClient.get(endereco);
 	}
 }
