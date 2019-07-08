@@ -1,0 +1,76 @@
+<div class="container mt-4">
+
+	<header>
+		<h2 class="text-center">{{ tituloPagina }}</h2>
+	</header>
+
+	<form [formGroup]="formNovoLivro" (submit)="montarECompartilharLivro()">
+
+		<div class="form-group">
+			<label for="isbn" class="col-sm col-form-label">ISBN</label>
+			<div class="col-sm">
+				<input id="isbn" formControlName="isbn" type="text" placeholder="9780132350884" class="form-control">
+				<small *ngIf="formNovoLivro.get('isbn').errors?.required" class="text-danger">Este campo é
+					obrigatório</small>
+				<small *ngIf="formNovoLivro.get('isbn').errors?.pattern" class="text-danger">Este campo só aceita
+					número</small>
+				<small *ngIf="formNovoLivro.get('isbn').errors?.maxlength" class="text-danger">O ISBN deve conter no
+					máximo 13 caracteres</small>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="titulo" class="col-sm col-form-label">Título</label>
+			<div class="col-sm">
+				<input id="titulo" formControlName="titulo" type="text" placeholder="Clean code" class="form-control">
+				<small *ngIf="formNovoLivro.get('titulo').errors?.required" class="text-danger">Este campo é
+					obrigatório</small>
+				<small
+					*ngIf="formNovoLivro.get('titulo').errors?.minlength || formNovoLivro.get('titulo').errors?.maxlength"
+					class="text-danger">O título deve conter entre 5 e 150 caracteres</small>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="descricao" class="col-sm col-form-label">Descrição</label>
+			<div class="col-sm">
+				<textarea id="descricao" formControlName="descricao" placeholder="Breve descrição do conteúdo do livro"
+					class="form-control"></textarea>
+				<small *ngIf="formNovoLivro.get('descricao').errors?.required" class="text-danger">Este campo é
+					obrigatório</small>
+				<small *ngIf="formNovoLivro.get('descricao').errors?.maxlength" class="text-danger">A descrição deve
+					conter no máximo 150 caracteres</small>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="row col-sm no-gutters">
+				<div class="col-sm">
+					<label for="urlCapa" class="">Endereço da capa do livro</label>
+					<input id="urlCapa" formControlName="urlCapa" type="text"
+						placeholder="http://www.imagem.com/img-livro" class="form-control">
+					<small *ngIf="formNovoLivro.get('urlCapa').errors?.required" class="text-danger">Este campo é
+						obrigatório</small>
+					<small *ngIf="formNovoLivro.get('urlCapa').errors?.maxlength" class="text-danger">A url deve conter
+						no máximo 250 caracteres</small>
+				</div>
+
+				<div class="col-sm-4 ml-1">
+					<label for="categorias">Categoria</label>
+					<select id="categorias" class="custom-select" formControlName="categorias">
+						<option value="Programação e desenvolvimento">Programação e desenvolvimento</option>
+						<option value="UML">UML</option>
+						<option value="Boas práticas">Boas práticas</option>
+						<option value="Agile">Agile</option>
+					</select>
+					<small *ngIf="formNovoLivro.get('categorias').errors?.required" class="text-danger">Este campo é
+						obrigatório</small>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-2">
+			<button [disabled]="formNovoLivro.invalid" class="btn btn-primary">Compartilhar</button>
+		</div>
+	</form>
+</div>
