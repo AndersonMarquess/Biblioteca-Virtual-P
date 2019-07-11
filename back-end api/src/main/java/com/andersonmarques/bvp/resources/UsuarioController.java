@@ -56,6 +56,17 @@ public class UsuarioController {
 		return ResponseEntity.ok(Mono.just(usuarioResposta.gerarJSON()));
 	}
 
+	@GetMapping(path = V1_BASE_PATH + "/info/{email}", produces = { APPLICATION_JSON })
+	public ResponseEntity<Mono<String>> buscarInfoPorEmail(@PathVariable("email") String email) {
+		Usuario usuarioResposta = usuarioService.buscarUsuarioPorEmail(email);
+		
+		if (!EndpointUtil.isUsuarioPermitido(usuarioResposta.getId(), usuarioService)) {
+			throw new UsuarioSemAutorizacaoException("O usuário não tem autorização para buscar esta informação.");
+		}
+
+		return ResponseEntity.ok(Mono.just(usuarioResposta.gerarJSON()));
+	}
+
 	@GetMapping(path = V1_BASE_PATH + "/contatos/{id}", produces = { APPLICATION_JSON })
 	public ResponseEntity<List<Contato>> buscarContatosUsuario(@PathVariable("id") String id) {
 		List<Contato> contatos = usuarioService.buscarUsuarioPorId(id).getContatos();

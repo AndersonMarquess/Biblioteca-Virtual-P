@@ -28,7 +28,8 @@ POST   | /login    | Login usuário
 MÉTODO | ENDPOINT                	| DESCRIÇÃO
 ---    | ---                     	| ---
 GET    | /v1/usuario/all         	| Listar todos os usuários
-GET	   | /v1/usuario/all/{ id }   	| Buscar usuário por id
+GET	   | /v1/usuario/{ id }   		| Buscar usuário por id
+GET	   | /v1/usuario/info/{ email }	| Buscar usuário por email
 GET	   | /v1/usuario/contatos/{ id }| Buscar contatos do usuário por id
 POST   | /v1/usuario             	| Criar usuário
 PUT    | /v1/usuario             	| Atualizar usuário
