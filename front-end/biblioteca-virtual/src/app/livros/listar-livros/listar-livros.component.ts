@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, Renderer } from '@angular/core';
 import { Contato } from 'src/app/compartilhados/models/contato';
 import { Livro } from 'src/app/compartilhados/models/livro';
 import { LivroComContato } from 'src/app/compartilhados/models/livro-com-contato';
-import { LivrosService } from '../livros.service';
 import { UsuariosService } from 'src/app/usuarios/usuarios.service';
+import { LivrosService } from '../livros.service';
 
 @Component({
 	selector: 'bvp-listar-livros',
-	templateUrl: './listar-livros.component.html'
+	templateUrl: './listar-livros.component.html',
+	styleUrls: ['./listar-livros.component.css']
 })
 export class ListarLivrosComponent implements OnInit {
 
 	todosOsLivros: Array<LivroComContato> = [];
 
-	constructor(private livrosService: LivrosService, private usuarioService: UsuariosService) { }
+	constructor(private livrosService: LivrosService, private usuarioService: UsuariosService,
+		private elementRef: ElementRef, private renderer: Renderer) { }
 
 	ngOnInit(): void {
 		this.livrosService
@@ -33,5 +35,15 @@ export class ListarLivrosComponent implements OnInit {
 				const contatos = suc;
 				this.todosOsLivros.push(new LivroComContato(livro, contatos));
 			});
+	}
+
+	private mostrarModal(index: string): void {
+		let elementoHTML = this.elementRef.nativeElement.querySelector("#modal-background" + index);
+		this.renderer.setElementStyle(elementoHTML, "display", "flex");
+	}
+
+	private esconderModal(index: string): void {
+		let elementoHTML = this.elementRef.nativeElement.querySelector("#modal-background" + index);
+		this.renderer.setElementStyle(elementoHTML, "display", "none");
 	}
 }
