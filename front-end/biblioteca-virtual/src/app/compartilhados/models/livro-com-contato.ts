@@ -12,6 +12,10 @@ export class LivroComContato {
 		this.contatos = contatos;
 	}
 
+	getId(): string {
+		return this.livro.id;
+	}
+
 	getIsbn(): string {
 		return this.livro.isbn;
 	}
@@ -30,5 +34,9 @@ export class LivroComContato {
 
 	getContatos(): Array<Contato> {
 		return this.contatos;
+	}
+
+	getIdDono(): string {
+		return this.livro.idDonoLivro;
 	}
 }

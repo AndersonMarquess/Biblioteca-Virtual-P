@@ -24,34 +24,38 @@
 				</li>
 			</ul>
 
-			<div class="card-footer relativo-modal" >
-				<!-- Ativa o modal -->
-				<button type="button" class="btn btn-outline-danger" (click)="mostrarModal(index)">Remover</button>
+			<div class="card-footer">
+				<div class="relativo-modal" *ngIf="(usuario$ | async)?.id == livro.getIdDono()">
+					<!-- Ativa o modal -->
+					<button type="button" class="btn btn-outline-danger" (click)="exibirEOcultarModal(index)">Remover</button>
 
-				<div class="modal-background-escuro align-items-center justify-content-center" id="modal-background{{index}}">
-					<!-- Modal -->
-					<div class="modal-simples">
-						<header>
-							<h6 class="font-weight-bold text-left">
-								Remover livro
-							</h6>
-						</header>
-						<hr>
-						<div>
-							<p>
-								Deseja realmente remover o livro "<span
-									class="font-weight-bold">{{ livro.getTitulo() }}</span>"?
-							</p>
+					<div class="modal-background-escuro align-items-center justify-content-center"
+						id="modal-background{{index}}">
+						<!-- Modal -->
+						<div class="modal-simples">
+							<header>
+								<h6 class="font-weight-bold text-left">
+									Remover livro
+								</h6>
+							</header>
+							<hr>
+							<div>
+								<p>
+									Deseja realmente remover o livro "
+									<span class="font-weight-bold">{{ livro.getTitulo() }}</span>"?
+								</p>
+							</div>
+							<hr>
+							<footer class="text-right">
+								<button class="btn btn-secondary m-1" (click)="exibirEOcultarModal(index)">Cancelar</button>
+								<button class="btn btn-danger m-1"
+									(click)="removerLivroComId(livro.getId())">Confirmar</button>
+							</footer>
 						</div>
-						<hr>
-						<footer class="text-right">
-							<button class="btn btn-secondary m-1" (click)="esconderModal(index)">Cancelar</button>
-							<button class="btn btn-danger m-1">Confirmar</button>
-						</footer>
 					</div>
+					<hr>
 				</div>
 
-				<hr>
 				<p class="text-muted" *ngFor="let cat of livro.getCategorias()">{{cat.nome}}</p>
 			</div>
 		</div>
