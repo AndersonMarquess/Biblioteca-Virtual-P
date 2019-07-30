@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { UsuarioTokenJWT } from 'src/app/compartilhados/models/usuarioTokenJWT';
+
+import * as jwt_decode from 'jwt-decode';
 
 const CHAVE_TOKEN = "jwtToken";
 
@@ -27,5 +30,17 @@ export class TokenService {
 
 	removerToken(): void {
 		localStorage.removeItem(CHAVE_TOKEN);
+	}
+
+	tokenEstaExpirado(): boolean {
+		if (this.getToken()) {
+			const usuarioTokenJWT = jwt_decode(this.getToken()) as UsuarioTokenJWT;
+			const dataExpiracao = new Date(usuarioTokenJWT.exp * 1000);
+			const dataAtual = new Date();
+
+			return dataAtual > dataExpiracao;
+		}
+
+		return false;
 	}
 }
