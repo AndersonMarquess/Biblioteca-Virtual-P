@@ -32,8 +32,12 @@
 			</div>
 		</div>
 
-		<div class="col-sm-1">
+		<div class="col-md-11">
 			<button [disabled]="formularioDeLogin.invalid" class="btn btn-primary">Entrar</button>
 		</div>
 	</form>
+
+	<p class="col-md-11 mt-4 mb-4">
+		Não possui uma conta? Visite <a [routerLink]="['/auth','cadastrar']">criar conta</a>.
+	</p>
 </div>

@@ -62,8 +62,12 @@
 			</div>
 		</div>
 
-		<div class="col-sm-2">
-			<button [disabled]="formCadastro.invalid" class="btn btn-primary">Entrar</button>
+		<div class="col-md-11">
+			<button [disabled]="formCadastro.invalid" class="btn btn-primary">Cadastrar-se</button>
 		</div>
 	</form>
+
+	<p class="col-md-11 mt-4 mb-4">
+		Já possui uma conta? Faça <a [routerLink]="['/auth','login']">login</a>.
+	</p>
 </div>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CadastroService } from './cadastro.service';
 
 @Component({
@@ -11,7 +12,8 @@ export class CadastroComponent implements OnInit {
 	formCadastro: FormGroup;
 	erroCadastro = false;
 
-	constructor(private formBuilder: FormBuilder, private cadastroService: CadastroService) { }
+	constructor(private formBuilder: FormBuilder, private cadastroService: CadastroService,
+		private router: Router) { }
 
 	ngOnInit(): void {
 		this.formCadastro = this.formBuilder.group({
@@ -46,7 +48,10 @@ export class CadastroComponent implements OnInit {
 		this.cadastroService
 			.cadastrar(novoUsuario)
 			.subscribe(
-				suc => console.log("Cadastrado com sucesso"),
+				suc => {
+					this.router.navigate(['/auth', 'login']);
+					console.log("Cadastrado com sucesso");
+				},
 				err => {
 					console.log(err.message);
 					this.erroCadastro = true;
