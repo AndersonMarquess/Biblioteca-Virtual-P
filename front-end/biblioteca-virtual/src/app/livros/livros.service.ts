@@ -15,6 +15,11 @@ export class LivrosService {
 		return this.httpClient.get<Array<Livro>>(endereco);
 	}
 
+	buscarLivrosDoUsuario(idDonoLivro: string): Observable<Array<Livro>> {
+		const endereco = API_URL + "/v1/livro/all/" + idDonoLivro;
+		return this.httpClient.get<Array<Livro>>(endereco);
+	}
+
 	removerLivroComId(idLivro: string): Observable<any> {
 		const endereco = API_URL + "/v1/livro/" + idLivro;
 		return this.httpClient.delete(endereco);
@@ -23,5 +28,10 @@ export class LivrosService {
 	cadastrar(livro: Livro): Observable<Livro> {
 		const endereco = API_URL + "/v1/livro";
 		return this.httpClient.post<Livro>(endereco, livro);
+	}
+
+	atualizar(livro: Livro): Observable<Livro> {
+		const endereco = API_URL + "/v1/livro";
+		return this.httpClient.put<Livro>(endereco, livro);
 	}
 }
