@@ -40,7 +40,6 @@ export class TokenService {
 
 			return dataAtual > dataExpiracao;
 		}
-
-		return false;
+		return true;
 	}
 }
