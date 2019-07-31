@@ -1,6 +1,6 @@
 <main>
 	<header>
-		<h2 class="text-center">Lista de livros</h2>
+		<h2 class="text-center">{{ tituloPagina }}</h2>
 	</header>
 
 	<div class="d-flex flex-row justify-content-center flex-wrap">
@@ -25,7 +25,7 @@
 			</ul>
 
 			<div class="card-footer">
-				<div class="relativo-modal" *ngIf="(usuario$ | async)?.id == livro.getIdDono()">
+				<div class="relativo-modal" visivelApenasParaCriador [idDonoLivro]="livro.getIdDono()">
 					<!-- Ativa o modal -->
 					<button type="button" class="btn btn-outline-danger" (click)="exibirEOcultarModal(index)">Remover</button>
 

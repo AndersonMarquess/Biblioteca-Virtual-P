@@ -1,5 +1,6 @@
 .relativo-modal {
 	position: relative;
+	display: none;
 }
 
 .modal-background-escuro {

@@ -1,10 +1,9 @@
 import { Component, ElementRef, OnInit, Renderer } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { Contato } from 'src/app/compartilhados/models/contato';
 import { Livro } from 'src/app/compartilhados/models/livro';
 import { LivroComContato } from 'src/app/compartilhados/models/livro-com-contato';
-import { Usuario } from 'src/app/compartilhados/models/usuario';
 import { UsuariosService } from 'src/app/usuarios/usuarios.service';
 import { LivrosService } from '../livros.service';
 
@@ -16,13 +15,14 @@ import { LivrosService } from '../livros.service';
 export class ListarLivrosComponent implements OnInit {
 
 	todosOsLivros: Array<LivroComContato> = [];
-	usuario$: Observable<Usuario>;
+	tituloPagina = "Listagem de livros";
 	isModalAtivo = false;
 
 	constructor(private livrosService: LivrosService, private usuarioService: UsuariosService,
-		private elementRef: ElementRef, private renderer: Renderer, private router: Router) { }
+		private elementRef: ElementRef, private renderer: Renderer, private router: Router, private title: Title) { }
 
 	ngOnInit(): void {
+		this.title.setTitle(this.tituloPagina);
 		this.livrosService
 			.buscarTodosOsLivros()
 			.subscribe(
@@ -31,7 +31,6 @@ export class ListarLivrosComponent implements OnInit {
 				},
 				err => console.log(err)
 			);
-		this.usuario$ = this.usuarioService.getUsuarioLogado();
 	}
 
 	private transformarEmLivroComContato(livro: Livro): void {
@@ -45,7 +44,7 @@ export class ListarLivrosComponent implements OnInit {
 
 	private exibirEOcultarModal(index: string): void {
 		let elementoHTML = this.elementRef.nativeElement.querySelector("#modal-background" + index);
-		let valorDisplay = this.isModalAtivo? "none" : "flex";
+		let valorDisplay = this.isModalAtivo ? "none" : "flex";
 		this.isModalAtivo = !this.isModalAtivo;
 		this.renderer.setElementStyle(elementoHTML, "display", valorDisplay);
 	}
