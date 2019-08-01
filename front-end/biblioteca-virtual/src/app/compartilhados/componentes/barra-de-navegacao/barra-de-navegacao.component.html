@@ -1,0 +1,26 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+	<a class="navbar-brand" [routerLink]="['/livros', 'todos']">Biblioteca Virtual</a>
+
+	<ul class="navbar-nav flex-row ml-auto" *ngIf="(usuario$ | async) as usuario; else login">
+		<li class="nav-item active ml-2 mr-2">
+			<a class="nav-link" [routerLink]="['/livros', 'todos']">Listar livros</a>
+		</li>
+		<li class="nav-item active ml-2 mr-2">
+			<a class="nav-link" [routerLink]="['/livros', 'novo']">Compartilhar livro</a>
+		</li>
+
+		<span class="nome-usuario"> {{ usuario.nome | uppercase }}</span>
+
+		<li class="nav-item active ml-2 mr-2">
+			<a class="nav-link" [routerLink]="" (click)="deslogar()">SAIR</a>
+		</li>
+	</ul>
+
+	<ng-template #login>
+		<ul class="navbar-nav ml-auto">
+			<li class="nav-item active">
+				<a class="nav-link" [routerLink]="['/inicio', 'login']">LOGIN</a>
+			</li>
+		</ul>
+	</ng-template>
+</nav>
