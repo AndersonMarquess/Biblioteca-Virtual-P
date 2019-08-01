@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
 		if (this.enderecoPosLogin) {
 			this.router.navigateByUrl(this.enderecoPosLogin);
 		} else {
-			this.router.navigate(['livros']);
+			this.router.navigate(['/livros','todos']);
 		}
 	}
 }

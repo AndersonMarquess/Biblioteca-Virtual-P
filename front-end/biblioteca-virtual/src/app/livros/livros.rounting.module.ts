@@ -10,8 +10,8 @@ const rotas: Routes = [
 		component: LivrosComponent,
 		children: [
 			//rotas filhas de /livros
-			{ path: '', redirectTo: 'all' },
-			{ path: 'all', component: ListarLivrosComponent },
+			{ path: '', redirectTo: 'todos' },
+			{ path: 'todos', component: ListarLivrosComponent },
 			{ path: 'novo', component: FormLivroComponent },
 			{ path: 'editar/:idDono/:idLivro', component: FormLivroComponent }
 		]

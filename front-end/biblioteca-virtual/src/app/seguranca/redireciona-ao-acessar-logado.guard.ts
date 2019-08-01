@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { TokenService } from './token/token.service';
 
 @Injectable({ providedIn: "root" })
-export class LoginObrigatorioGuard implements CanActivate {
+export class RedirecionaAoAcessarLogadoGuard implements CanActivate {
 
 	constructor(private tokenService: TokenService, private router: Router) { }
 
@@ -12,8 +12,8 @@ export class LoginObrigatorioGuard implements CanActivate {
 	 * true para permitir acesso à rota.
 	 */
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> {
-		if (this.tokenService.tokenEstaExpirado()) {
-			this.redirecionarParaLogin(state);
+		if (!this.tokenService.tokenEstaExpirado()) {
+			this.redirecionaParaListagemDeLivros();
 			return false;
 		} else {
 			return true;
@@ -21,14 +21,9 @@ export class LoginObrigatorioGuard implements CanActivate {
 	}
 
 	/**
-	 * Vai para tela de login, após fazer login, redireciona o usuário para rota que ele estava tentando acessar anteriormente.
-	 * @param state 
+	 * Vai para página de listagem de livros
 	 */
-	private redirecionarParaLogin(state: RouterStateSnapshot): void {
-		this.router.navigate(
-			['/inicio', 'login'],
-			// acesse redirecionarPara na query param.
-			{ queryParams: { redirecionarPara: state.url } }
-		);
+	private redirecionaParaListagemDeLivros(): void {
+		this.router.navigate(['/livros', 'todos']);
 	}
 }

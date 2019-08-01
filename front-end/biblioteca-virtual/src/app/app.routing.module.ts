@@ -7,10 +7,10 @@ const rotas: Routes = [
 	{
 		path: '',
 		pathMatch: 'full',
-		redirectTo: 'auth'
+		redirectTo: 'inicio'
 	},
 	{
-		path: 'auth',
+		path: 'inicio',
 		// Módulo que será carregado na rota filha.
 		loadChildren: './seguranca/seguranca.module#SegurancaModule'
 	},
@@ -20,11 +20,12 @@ const rotas: Routes = [
 		redirectTo: 'livros'
 	},
 	{
-		// As rotas filhas são chamadas após o path ex. { /livros/all ou /livros/add }
+		// As rotas filhas são chamadas após o path ex. { /livros/todos ou /livros/novo }
 		path: 'livros',
 		loadChildren: './livros/livros.module#LivrosModule',
 		canActivate: [LoginObrigatorioGuard]
 	},
+	{ path: 'nao-encontrado', component: PaginaNaoEncontradaComponent },
 	{
 		// Lida com rotas inexistentes.
 		path: '**',

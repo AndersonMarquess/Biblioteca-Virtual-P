@@ -102,7 +102,7 @@ export class FormLivroComponent implements OnInit {
 		operacao.subscribe(
 			() => {
 				console.log("Livro compartilhado com sucesso");
-				this.router.navigate(['/livros', 'all']);
+				this.router.navigate(['/livros', 'todos']);
 			},
 			() => console.log("Erro ao tentar salvar livro")
 		);

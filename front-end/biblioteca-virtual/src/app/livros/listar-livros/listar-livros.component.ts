@@ -56,7 +56,7 @@ export class ListarLivrosComponent implements OnInit {
 				sucesso => this.router.navigate(['']),
 				erro => {
 					console.log(erro.message);
-					this.router.navigate(['livros', 'all']);
+					this.router.navigate(['/livros', 'todos']);
 				}
 			);
 	}

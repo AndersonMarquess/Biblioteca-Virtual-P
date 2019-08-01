@@ -49,7 +49,7 @@ export class CadastroComponent implements OnInit {
 			.cadastrar(novoUsuario)
 			.subscribe(
 				suc => {
-					this.router.navigate(['/auth', 'login']);
+					this.router.navigate(['/inicio', 'login']);
 					console.log("Cadastrado com sucesso");
 				},
 				err => {
