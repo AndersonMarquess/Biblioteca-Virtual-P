@@ -10,7 +10,7 @@ import * as jwt_decode from "jwt-decode";
 
 const API_URL = "http://localhost:8080";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class UsuariosService {
 
 	private usuarioSubject = new BehaviorSubject<Usuario>(null);
@@ -35,7 +35,7 @@ export class UsuariosService {
 		return this.usuarioSubject.asObservable();
 	}
 
-	private decodificarENotificar(): void {
+	decodificarENotificar(): void {
 		const token = this.tokenService.getToken();
 		const usuarioJWT = jwt_decode(token) as UsuarioTokenJWT;
 
@@ -47,5 +47,10 @@ export class UsuariosService {
 			.subscribe(
 				respUser => this.usuarioSubject.next(respUser)
 			);
+	}
+
+	deslogar(): void {
+		this.tokenService.removerToken();
+		this.usuarioSubject.next(null);
 	}
 }
