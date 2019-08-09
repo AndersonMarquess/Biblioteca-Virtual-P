@@ -5,13 +5,15 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing.module';
 import { BarraDeNavegacaoComponent } from './compartilhados/componentes/barra-de-navegacao/barra-de-navegacao.component';
 import { PaginaNaoEncontradaComponent } from './compartilhados/componentes/pagina-nao-encontrada/pagina-nao-encontrada.component';
+import { RodapeComponent } from './compartilhados/componentes/rodape/rodape.component';
 import { TokenRequestInterceptorModule } from './seguranca/token/token-request.interceptor.module';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		PaginaNaoEncontradaComponent,
-		BarraDeNavegacaoComponent
+		BarraDeNavegacaoComponent,
+		RodapeComponent
 	],
 	imports: [
 		BrowserModule,
