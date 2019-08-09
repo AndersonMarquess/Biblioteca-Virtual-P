@@ -37,13 +37,14 @@ DELETE | /v1/usuario/{ id }      	| Remover usuário
 
 ## Livro
 
-MÉTODO | ENDPOINT              | DESCRIÇÃO
----    | ---                   | ---
-GET    | /v1/livro/all         | Listar todos os livros
-GET	   | /v1/livro/all/{ id }  | Listar todos os livros do usuário
-POST   | /v1/livro             | Criar livro
-PUT    | /v1/livro             | Atualizar livro
-DELETE | /v1/livro/{ id }      | Remover livro
+MÉTODO | ENDPOINT                      | DESCRIÇÃO
+---    | ---                           | ---
+GET    | /v1/livro/all                 | Listar todos os livros
+GET    | /v1/livro/allpg?page=0&size=5 | Listar todos os livros com paginação
+GET	   | /v1/livro/all/{ id }          | Listar todos os livros do usuário
+POST   | /v1/livro                     | Criar livro
+PUT    | /v1/livro                     | Atualizar livro
+DELETE | /v1/livro/{ id }              | Remover livro
 
 
 ## Criar usuário

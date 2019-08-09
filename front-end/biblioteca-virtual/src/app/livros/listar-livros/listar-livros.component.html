@@ -1,4 +1,4 @@
-<main>
+<main class="listagem">
 	<header>
 		<h2 class="text-center">{{ tituloPagina }}</h2>
 	</header>
@@ -11,9 +11,9 @@
 				alt="Imagem de capa do livro">
 
 			<div class="card-body">
-				<h5 class="card-title">{{livro.getTitulo() | uppercase}}</h5>
+				<h5 class="card-title">{{ livro.getTitulo() | uppercase }}</h5>
 				<p class="card-text col-2 text-truncate" style="max-width: 16rem">
-					{{livro.getDescricao()}}</p>
+					{{ livro.getDescricao() }}</p>
 			</div>
 
 			<ul class="list-group list-group-flush">
@@ -61,4 +61,12 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="d-flex justify-content-center" *ngIf="possuiMaisLivros; else fimListagem">
+		<button class="btn btn-primary" (click)="buscarMaisLivros()">Buscar mais livros</button>
+	</div>
+
+	<ng-template #fimListagem>
+		<p class="text-center">Fim da listagem</p>
+	</ng-template>
 </main>

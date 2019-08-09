@@ -17,17 +17,27 @@ export class ListarLivrosComponent implements OnInit {
 	todosOsLivros: Array<LivroComContato> = [];
 	tituloPagina = "Listagem de livros";
 	isModalAtivo = false;
+	numPagina = 0;
+	possuiMaisLivros = true;
 
 	constructor(private livrosService: LivrosService, private usuarioService: UsuariosService,
 		private elementRef: ElementRef, private renderer: Renderer, private router: Router, private title: Title) { }
 
 	ngOnInit(): void {
 		this.title.setTitle(this.tituloPagina);
+		this.buscarMaisLivros();
+	}
+
+	buscarMaisLivros() {
 		this.livrosService
-			.buscarTodosOsLivros()
+			.buscarTodosOsLivrosComPaginacao(this.numPagina++, 5)
 			.subscribe(
 				suc => {
-					suc.forEach(livro => this.transformarEmLivroComContato(livro));
+					if (suc && suc.length > 0) {
+						suc.forEach(livro => this.transformarEmLivroComContato(livro));
+					} else {
+						this.possuiMaisLivros = false;
+					}
 				},
 				err => console.log(err)
 			);
@@ -42,14 +52,14 @@ export class ListarLivrosComponent implements OnInit {
 			});
 	}
 
-	private exibirEOcultarModal(index: string): void {
+	exibirEOcultarModal(index: string): void {
 		let elementoHTML = this.elementRef.nativeElement.querySelector("#modal-background" + index);
 		let valorDisplay = this.isModalAtivo ? "none" : "flex";
 		this.isModalAtivo = !this.isModalAtivo;
 		this.renderer.setElementStyle(elementoHTML, "display", valorDisplay);
 	}
 
-	private removerLivroComId(idLivro: string): void {
+	removerLivroComId(idLivro: string): void {
 		this.livrosService
 			.removerLivroComId(idLivro)
 			.subscribe(

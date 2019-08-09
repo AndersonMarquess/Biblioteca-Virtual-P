@@ -15,6 +15,11 @@ export class LivrosService {
 		return this.httpClient.get<Array<Livro>>(endereco);
 	}
 
+	buscarTodosOsLivrosComPaginacao(index: number, size: number): Observable<Array<Livro>> {
+		const endereco = `${API_URL}/v1/livro/allpg?page=${index}&size=${size}`;
+		return this.httpClient.get<Array<Livro>>(endereco);
+	}
+
 	buscarLivrosDoUsuario(idDonoLivro: string): Observable<Array<Livro>> {
 		const endereco = API_URL + "/v1/livro/all/" + idDonoLivro;
 		return this.httpClient.get<Array<Livro>>(endereco);

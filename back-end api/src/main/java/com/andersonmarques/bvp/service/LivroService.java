@@ -2,13 +2,15 @@ package com.andersonmarques.bvp.service;
 
 import java.util.List;
 
+import com.andersonmarques.bvp.model.Livro;
+import com.andersonmarques.bvp.repository.LivroRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import com.andersonmarques.bvp.model.Livro;
-import com.andersonmarques.bvp.repository.LivroRepository;
 
 @Service
 public class LivroService {
@@ -30,6 +32,12 @@ public class LivroService {
 		return livroRepository.findAll();
 	}
 
+	@Cacheable("livroBuscarTodosPaginado")
+	public Page<Livro> buscarTodos(Pageable paginacao) {
+		System.out.println("Consulta no banco - todos os livros com paginação");
+		return livroRepository.findAll(paginacao);
+	}
+
 	@Cacheable("livroBuscarTodosPorIdUsuario")
 	public List<Livro> buscarLivrosPorIdUsuario(String id) {
 		System.out.println("Consulta no banco - livros por id usuario " + id);
@@ -42,27 +50,27 @@ public class LivroService {
 		return livroRepository.findById(id).get();
 	}
 
-	@CacheEvict(cacheNames = { "livroBuscarPorTitulo", "livroBuscarTodos", "livroBuscarTodosPorIdUsuario",
-			"livroBuscarPorId" }, allEntries = true)
+	@CacheEvict(cacheNames = { "livroBuscarPorTitulo", "livroBuscarTodos", "livroBuscarTodosPaginado",
+			"livroBuscarTodosPorIdUsuario", "livroBuscarPorId" }, allEntries = true)
 	public Livro adicionar(Livro livro) {
 		categoriaService.adicionarTodasAsCategoriaNoLivro(livro, livro.getCategorias());
 		return livroRepository.save(livro);
 	}
 
-	@CacheEvict(cacheNames = { "livroBuscarPorTitulo", "livroBuscarTodos", "livroBuscarTodosPorIdUsuario",
-			"livroBuscarPorId" }, allEntries = true)
+	@CacheEvict(cacheNames = { "livroBuscarPorTitulo", "livroBuscarTodos", "livroBuscarTodosPaginado",
+			"livroBuscarTodosPorIdUsuario", "livroBuscarPorId" }, allEntries = true)
 	public void removerPorId(String id) {
 		livroRepository.deleteById(id);
 	}
 
-	@CacheEvict(cacheNames = { "livroBuscarPorTitulo", "livroBuscarTodos", "livroBuscarTodosPorIdUsuario",
-			"livroBuscarPorId" }, allEntries = true)
+	@CacheEvict(cacheNames = { "livroBuscarPorTitulo", "livroBuscarTodos", "livroBuscarTodosPaginado",
+			"livroBuscarTodosPorIdUsuario", "livroBuscarPorId" }, allEntries = true)
 	void removerLivrosDoUsuarioComId(String id) {
 		livroRepository.deleteAllByIdDonoLivro(id);
 	}
 
-	@CacheEvict(cacheNames = { "livroBuscarPorTitulo", "livroBuscarTodos", "livroBuscarTodosPorIdUsuario",
-			"livroBuscarPorId" }, allEntries = true)
+	@CacheEvict(cacheNames = { "livroBuscarPorTitulo", "livroBuscarTodos", "livroBuscarTodosPaginado",
+			"livroBuscarTodosPorIdUsuario", "livroBuscarPorId" }, allEntries = true)
 	public Livro atualizar(Livro livro) {
 		categoriaService.adicionarTodasAsCategoriaNoLivro(livro, livro.getCategorias());
 		return livroRepository.save(livro);
