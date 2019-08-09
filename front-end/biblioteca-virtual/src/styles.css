@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-div.container {
+div.container, main.listagem {
 	/* navbar + footer = 146px */
 	min-height: calc(100vh - 146px);
 	margin-top: 1rem;
