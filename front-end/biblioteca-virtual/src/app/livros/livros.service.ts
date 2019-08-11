@@ -2,8 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Livro } from '../compartilhados/models/livro';
+import { environment } from '../../environments/environment';
 
-const API_URL = "http://localhost:8080";
+const API_URL = environment.ApiUrl;
 
 @Injectable()
 export class LivrosService {

@@ -2,9 +2,10 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { tap } from 'rxjs/operators';
 import { UsuariosService } from 'src/app/usuarios/usuarios.service';
+import { environment } from '../../../environments/environment';
 import { TokenService } from '../token/token.service';
 
-const API_URL = "http://localhost:8080";
+const API_URL = environment.ApiUrl;
 
 // Injetado no SegurancaModule
 @Injectable()

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { Usuario } from '../compartilhados/models/usuario';
 import { UsuarioTokenJWT } from '../compartilhados/models/usuarioTokenJWT';
 import { TokenService } from '../seguranca/token/token.service';
@@ -8,7 +9,7 @@ import { TokenService } from '../seguranca/token/token.service';
 // importa tudo e chama de jwt_decode
 import * as jwt_decode from "jwt-decode";
 
-const API_URL = "http://localhost:8080";
+const API_URL = environment.ApiUrl;
 
 @Injectable({ providedIn: "root" })
 export class UsuariosService {

@@ -16,6 +16,10 @@ Objetivo - Colocar em prática o uso do TDD, desenvolvimento de API REST e consu
 >	- Angular
 >- Plataforma
 >	- Heroku
+> 	- Firebase
+
+## Execução
+Link do projeto: [https://biblioteca-virtual-p.firebaseapp.com/](https://biblioteca-virtual-p.firebaseapp.com/)
 
 ## Autenticação
 
