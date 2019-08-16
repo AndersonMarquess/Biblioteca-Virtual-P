@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Livro } from '../compartilhados/models/livro';
 import { environment } from '../../environments/environment';
+import { LivroComContato } from '../compartilhados/models/livro-com-contato';
 
 const API_URL = environment.ApiUrl;
 
@@ -16,9 +17,9 @@ export class LivrosService {
 		return this.httpClient.get<Array<Livro>>(endereco);
 	}
 
-	buscarTodosOsLivrosComPaginacao(index: number, size: number): Observable<Array<Livro>> {
+	buscarTodosOsLivrosComPaginacao(index: number, size: number): Observable<Array<LivroComContato>> {
 		const endereco = `${API_URL}/v1/livro/allpg?page=${index}&size=${size}`;
-		return this.httpClient.get<Array<Livro>>(endereco);
+		return this.httpClient.get<Array<LivroComContato>>(endereco);
 	}
 
 	buscarLivrosDoUsuario(idDonoLivro: string): Observable<Array<Livro>> {

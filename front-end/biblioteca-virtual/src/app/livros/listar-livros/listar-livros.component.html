@@ -5,29 +5,30 @@
 
 	<div class="d-flex flex-row justify-content-center flex-wrap">
 
-		<div *ngFor="let livro of todosOsLivros; index as index" class="card text-center m-4" style="width: 18rem">
+		<div *ngFor="let livroComContato of todosOsLivros; index as index" class="card text-center m-4" style="width: 18rem">
 			<img class="card-img-top"
 				src="https://img.freepik.com/vetores-gratis/livros-stack-realistic_1284-4735.jpg?size=338&ext=jpg"
 				alt="Imagem de capa do livro">
 
 			<div class="card-body">
-				<h5 class="card-title">{{ livro.getTitulo() | uppercase }}</h5>
+				<h5 class="card-title">{{ livroComContato.livro.titulo | uppercase }}</h5>
 				<p class="card-text col-2 text-truncate" style="max-width: 16rem">
-					{{ livro.getDescricao() }}</p>
+					{{ livroComContato.livro.descricao }}</p>
 			</div>
 
 			<ul class="list-group list-group-flush">
-				<li class="list-group-item">{{livro.getIsbn()}}</li>
-				<li class="list-group-item" *ngFor="let contato of livro.contatos">
+				<li class="list-group-item">{{ livroComContato.livro.isbn }}</li>
+				<li class="list-group-item" *ngFor="let contato of livroComContato.contatos">
 					<span class="text-bold"> {{ contato.tipoLiteral }} </span>
 					<a class="card-link" [routerLink]="['']">{{ contato.endereco }}</a>
 				</li>
 			</ul>
 
 			<div class="card-footer">
-				<div class="relativo-modal" visivelApenasParaCriador [idDonoLivro]="livro.getIdDono()">
+				<div class="relativo-modal" visivelApenasParaCriador [idDonoLivro]="livroComContato.livro.idDonoLivro">
 					<!-- Ativa o modal -->
-					<button type="button" class="btn btn-outline-info m-1 mt-0" [routerLink]="['/livros','editar', livro.getIdDono(), livro.getId()]">Editar</button>
+					<button type="button" class="btn btn-outline-info m-1 mt-0" 
+						[routerLink]="['/livros','editar', livroComContato.livro.idDonoLivro, livroComContato.livro.id]">Editar</button>
 					<button type="button" class="btn btn-outline-danger" (click)="exibirEOcultarModal(index)">Remover</button>
 
 					<div class="modal-background-escuro align-items-center justify-content-center"
@@ -43,21 +44,21 @@
 							<div>
 								<p>
 									Deseja realmente remover o livro "
-									<span class="font-weight-bold">{{ livro.getTitulo() }}</span>"?
+									<span class="font-weight-bold">{{ livroComContato.livro.titulo }}</span>"?
 								</p>
 							</div>
 							<hr>
 							<footer class="text-right">
 								<button class="btn btn-secondary m-1" (click)="exibirEOcultarModal(index)">Cancelar</button>
 								<button class="btn btn-danger m-1"
-									(click)="removerLivroComId(livro.getId())">Confirmar</button>
+									(click)="removerLivroComId(livro.id)">Confirmar</button>
 							</footer>
 						</div>
 					</div>
 					<hr>
 				</div>
 
-				<p class="text-muted" *ngFor="let cat of livro.getCategorias()">{{cat.nome}}</p>
+				<p class="text-muted" *ngFor="let cat of livroComContato.livro.categorias">{{ cat.nome }}</p>
 			</div>
 		</div>
 	</div>

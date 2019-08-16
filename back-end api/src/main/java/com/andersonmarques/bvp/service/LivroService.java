@@ -3,6 +3,7 @@ package com.andersonmarques.bvp.service;
 import java.util.List;
 
 import com.andersonmarques.bvp.model.Livro;
+import com.andersonmarques.bvp.model.LivroComContatoDTO;
 import com.andersonmarques.bvp.repository.LivroRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ public class LivroService {
 	private LivroRepository livroRepository;
 	@Autowired
 	private CategoriaService categoriaService;
+	@Autowired
+	private UsuarioService usuarioService;
 
 	@Cacheable("livroBuscarPorTitulo")
 	public Livro buscarPorTitulo(String titulo) {
@@ -33,9 +36,19 @@ public class LivroService {
 	}
 
 	@Cacheable("livroBuscarTodosPaginado")
-	public Page<Livro> buscarTodos(Pageable paginacao) {
+	public Page<LivroComContatoDTO> buscarTodosComContatoDoUsuario(Pageable paginacao) {
 		System.out.println("Consulta no banco - todos os livros com paginação");
-		return livroRepository.findAll(paginacao);
+		Page<Livro> livros = livroRepository.findAll(paginacao);
+		Page<LivroComContatoDTO> livrosComContato = transformarLivroEmLivroComContato(livros);
+
+		return livrosComContato;
+	}
+
+	private Page<LivroComContatoDTO> transformarLivroEmLivroComContato(Page<Livro> livros) {
+		Page<LivroComContatoDTO> livrosComContato = livros.map(livro -> 
+			new LivroComContatoDTO(livro, usuarioService.buscarUsuarioPorId(livro.getIdDonoLivro()).getContatos())
+		);
+		return livrosComContato;
 	}
 
 	@Cacheable("livroBuscarTodosPorIdUsuario")

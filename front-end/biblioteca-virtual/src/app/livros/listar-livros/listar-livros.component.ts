@@ -1,11 +1,9 @@
 import { Component, ElementRef, OnInit, Renderer } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { Contato } from 'src/app/compartilhados/models/contato';
-import { Livro } from 'src/app/compartilhados/models/livro';
-import { LivroComContato } from 'src/app/compartilhados/models/livro-com-contato';
 import { UsuariosService } from 'src/app/usuarios/usuarios.service';
 import { LivrosService } from '../livros.service';
+import { LivroComContato } from 'src/app/compartilhados/models/livro-com-contato';
 
 @Component({
 	selector: 'bvp-listar-livros',
@@ -32,24 +30,15 @@ export class ListarLivrosComponent implements OnInit {
 		this.livrosService
 			.buscarTodosOsLivrosComPaginacao(this.numPagina++, 5)
 			.subscribe(
-				suc => {
-					if (suc && suc.length > 0) {
-						suc.forEach(livro => this.transformarEmLivroComContato(livro));
+				livrosComContatos => {
+					if (livrosComContatos && livrosComContatos.length > 0) {
+						livrosComContatos.forEach(lc => this.todosOsLivros.push(lc))
 					} else {
 						this.possuiMaisLivros = false;
 					}
 				},
 				err => console.log(err)
 			);
-	}
-
-	private transformarEmLivroComContato(livro: Livro): void {
-		this.usuarioService
-			.buscarContatoDoUsuario(livro.idDonoLivro)
-			.subscribe((suc: Contato[]) => {
-				const contatos = suc;
-				this.todosOsLivros.push(new LivroComContato(livro, contatos));
-			});
 	}
 
 	exibirEOcultarModal(index: string): void {

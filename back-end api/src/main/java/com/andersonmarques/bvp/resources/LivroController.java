@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import com.andersonmarques.bvp.exception.UsuarioSemAutorizacaoException;
 import com.andersonmarques.bvp.model.Livro;
+import com.andersonmarques.bvp.model.LivroComContatoDTO;
 import com.andersonmarques.bvp.security.EndpointUtil;
 import com.andersonmarques.bvp.service.LivroService;
 import com.andersonmarques.bvp.service.UsuarioService;
@@ -40,8 +41,8 @@ public class LivroController {
 	}
 
 	@GetMapping(path = V1_BASE_PATH + "/allpg", produces = { "application/json" })
-	public ResponseEntity<Flux<Livro>> buscarTodos(Pageable paginacao) {
-		return ResponseEntity.ok(Flux.fromIterable(livroService.buscarTodos(paginacao)));
+	public ResponseEntity<Flux<LivroComContatoDTO>> buscarTodos(Pageable paginacao) {
+		return ResponseEntity.ok(Flux.fromIterable(livroService.buscarTodosComContatoDoUsuario(paginacao)));
 	}
 
 	@PostMapping(path = V1_BASE_PATH, produces = { "application/json" })
