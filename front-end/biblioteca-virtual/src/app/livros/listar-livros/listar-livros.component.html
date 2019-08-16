@@ -51,7 +51,7 @@
 							<footer class="text-right">
 								<button class="btn btn-secondary m-1" (click)="exibirEOcultarModal(index)">Cancelar</button>
 								<button class="btn btn-danger m-1"
-									(click)="removerLivroComId(livro.id)">Confirmar</button>
+									(click)="removerLivroComId(livroComContato.livro.id);exibirEOcultarModal(index)">Confirmar</button>
 							</footer>
 						</div>
 					</div>

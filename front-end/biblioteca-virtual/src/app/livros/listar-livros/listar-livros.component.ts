@@ -52,11 +52,20 @@ export class ListarLivrosComponent implements OnInit {
 		this.livrosService
 			.removerLivroComId(idLivro)
 			.subscribe(
-				sucesso => this.router.navigate(['']),
+				sucesso => {
+					this.resetarNavegacao();
+				},
 				erro => {
 					console.log(erro.message);
 					this.router.navigate(['/livros', 'todos']);
 				}
 			);
+	}
+
+	private resetarNavegacao() {
+		this.todosOsLivros.length = 0;
+		this.numPagina = 0;
+		this.possuiMaisLivros = true;
+		this.buscarMaisLivros();
 	}
 }
